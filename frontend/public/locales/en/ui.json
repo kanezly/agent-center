@@ -1,0 +1,324 @@
+{
+  "task": {
+    "queued": "Queued",
+    "running": "Running",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "pending": "Pending",
+    "reviewing": "Reviewing",
+    "post_processing": "Post-processing",
+    "mode": {
+      "plan": "Plan Mode"
+    },
+    "dependencies": "Dependencies",
+    "isolation": {
+      "enabled": "Isolated Execution"
+    },
+    "auto_approve": {
+      "enabled": "Auto Approve"
+    }
+  },
+  "plan": {
+    "generating": "Generating",
+    "reviewing": "Reviewing",
+    "approved": "Approved",
+    "executing": "Executing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "running": "Running",
+    "queued": "Queued",
+    "submitAnswer": "Submit Answer"
+  },
+  "worker": {
+    "idle": "Idle",
+    "busy": "Busy"
+  },
+  "filterGroup": {
+    "all": "All",
+    "todo-agent": "TODO-Agent",
+    "todo-human": "TODO-Human",
+    "done": "Done"
+  },
+  "logEvent": {
+    "assistant": "Assistant",
+    "tool_use": "Tool Use",
+    "tool_result": "Tool Result",
+    "result": "Result",
+    "error": "Error",
+    "system": "System"
+  },
+  "taskInput": {
+    "stash": "Stash",
+    "execute": "Execute",
+    "executeTask": "Execute Task",
+    "executingInbox": "Executing inbox task",
+    "cancel": "Cancel",
+    "placeholderExecute": "Describe your goal, execute task",
+    "placeholderPlan": "Describe your goal, generate plan first",
+    "toastInboxAdded": "Added to inbox",
+    "toastTaskCreated": "Task created",
+    "toastPlanCreated": "Plan created"
+  },
+  "project": {
+    "linkProject": "Link Project",
+    "loading": "Loading...",
+    "noProject": "No Project",
+    "createProject": "Create Project...",
+    "newProject": "New Project",
+    "createDescription": "Create a new project",
+    "nameLabel": "Project Name *",
+    "pathLabel": "Project Path *",
+    "displayNameLabel": "Display Name",
+    "descriptionLabel": "Project Description",
+    "namePlaceholder": "my-project",
+    "pathPlaceholder": "Select project folder path",
+    "displayNamePlaceholder": "My Project",
+    "descriptionPlaceholder": "Project description...",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "create": "Create Project",
+    "confirmDelete": "Are you sure you want to delete project",
+    "deleteConfirm": "?\n\nAll related records will be deleted, including tasks, logs, and conversations. This action cannot be undone!"
+  },
+  "taskConfig": {
+    "planMode": "Plan Mode",
+    "executeMode": "Execute Mode",
+    "planModeDesc": "Generate plan, execute after approval",
+    "executeModeDesc": "Execute task directly",
+    "isolatedMode": "Isolated Mode",
+    "isolatedModeDesc": "Execute in Git worktree isolated environment",
+    "autoApprove": "Auto Approve",
+    "autoApproveDesc": "Auto approve after task completion",
+    "dependencies": "Dependencies",
+    "dependenciesDesc": "Select unfinished tasks as prerequisites. New tasks will wait for dependencies to complete before starting.",
+    "forkFrom": "Fork From",
+    "forkFromDesc": "Continue from existing task",
+    "selectProject": "Select Project",
+    "selectTask": "Select Task",
+    "noProject": "No project selected",
+    "noTask": "No task selected",
+    "nonGitProjectWarning": "Non-Git projects cannot use isolated mode",
+    "dependenciesLabel": "Dependent Tasks",
+    "dependenciesDescLong": "Select unfinished tasks as prerequisites. New tasks will wait for dependencies to complete before starting.",
+    "noRunningTasks": "No running tasks",
+    "noRunningTasksInProject": "No running tasks in this project",
+    "forkFromLabel": "Inherit Context",
+    "forkFromDescLong": "Select a completed task to inherit its conversation context. New tasks will continue the conversation from the previous task.",
+    "noCompletedTasks": "No completed tasks",
+    "noCompletedTasksInProject": "No completed tasks in this project",
+    "isolatedModeLabel": "Task Isolation",
+    "isolatedModeActive": "Tasks will run in isolated workspaces (git worktree), not interfering with each other",
+    "isolatedModeInactive": "When enabled, each task runs in a separate working directory to avoid file conflicts",
+    "notGitProject": "Current project is not a Git repository. Task isolation feature is unavailable.",
+    "initGitProject": "To use this feature, please initialize the project as a Git repository first.",
+    "advancedOptions": "Advanced Options",
+    "isolatedModeTooltip": "Execute tasks in an isolated environment. Uses Git worktree branches for Git projects (parallel execution without conflicts); creates a separate directory for standalone tasks (security isolation).",
+    "autoApproveTooltip": "Auto approve after task completion, skipping the review state and proceeding directly to the next stage."
+  },
+  "folderPicker": {
+    "placeholder": "Select folder path",
+    "browse": "Browse",
+    "selectFolder": "Select Folder",
+    "loading": "Loading...",
+    "emptyFolder": "This folder is empty",
+    "selectThisFolder": "Select This Folder"
+  },
+  "common": {
+    "loading": "Loading...",
+    "noData": "No data",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "save": "Save",
+    "close": "Close",
+    "planTag": "Plan",
+    "realtime": "Real-time"
+  },
+  "time": {
+    "justNow": "Just now",
+    "minutesAgo": "{{minutes}} minutes ago",
+    "hoursAgo": "{{hours}} hours ago",
+    "daysAgo": "{{days}} days ago",
+    "weeksAgo": "{{weeks}} weeks ago",
+    "monthsAgo": "{{months}} months ago",
+    "yearsAgo": "{{years}} years ago"
+  },
+  "unifiedList": {
+    "placeholder": "Add new task or plan...",
+    "noTasks": "No tasks",
+    "noTasksDesc": "Enter task description to start execution",
+    "noPendingTasks": "No pending tasks",
+    "noPendingTasksDesc": "Agent is idle",
+    "noReviewTasks": "No tasks pending review",
+    "noReviewTasksDesc": "No tasks requiring human intervention",
+    "noDoneTasks": "No completed tasks",
+    "noDoneTasksDesc": "Completed tasks will appear here",
+    "taskDeleted": "Task deleted",
+    "taskCreated": "Task created",
+    "planCreated": "Plan created",
+    "planTag": "Plan",
+    "deleteTaskTitle": "Delete Task",
+    "loading": "Loading...",
+    "lastUpdated": "Updated "
+  },
+  "inbox": {
+    "title": "Inbox",
+    "empty": "No inbox items",
+    "convertToTask": "Convert to Task",
+    "delete": "Delete",
+    "badgeTitle": "Inbox"
+  },
+  "filters": {
+    "updatedTime": "Updated Time",
+    "createdTime": "Created Time",
+    "desc": "Descending (Newest First)",
+    "asc": "Ascending (Oldest First)",
+    "allProjects": "All Projects"
+  },
+  "projectFilter": {
+    "allProjects": "All",
+    "noProject": "Unassigned Tasks",
+    "noTasksInProject": "No tasks in this project",
+    "noTasksInProjectDesc": "Try switching to another project or all"
+  },
+  "actions": {
+    "delete": "Delete Task",
+    "close": "Close",
+    "logout": "Logout",
+    "clear": "Clear",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "copy": "Copy",
+    "approve": "✅ Complete",
+    "addInstruction": "➕ Add Instruction",
+    "retry": "🔄 Retry",
+    "cancelTask": "Cancel Task",
+    "approveExecute": "Approve & Execute",
+    "send": "Send",
+    "cancel": "Cancel",
+    "execute": "Execute"
+  },
+  "labels": {
+    "planGoal": "Plan Goal:",
+    "taskDescription": "Task Description:",
+    "sessionId": "Session ID"
+  },
+  "taskDrawer": {
+    "loading": "Loading...",
+    "loadFailed": "Load failed"
+  },
+  "planDrawer": {
+    "loading": "Loading...",
+    "loadFailed": "Load failed"
+  },
+  "advancedOptions": {
+    "title": "Advanced Options",
+    "dependsOn": "Dependencies",
+    "dependsOnDesc": "Select unfinished tasks as prerequisites. New tasks will wait for dependencies to complete before starting. Suitable for sequential task workflows.",
+    "forkFrom": "Inherit Context",
+    "forkFromDesc": "Select a completed task to inherit its conversation context. New tasks will continue the conversation from the previous task, as if never interrupted.",
+    "isolatedMode": "Task Isolation",
+    "isolatedModeDesc": "Execute tasks in Git worktree isolated environments. Each task runs in a separate working directory, suitable for scenarios requiring file modifications without conflicts.",
+    "noDependentTasks": "No dependent tasks",
+    "noForkTasks": "No tasks to inherit context from",
+    "selected": "Selected",
+    "notSelected": "Not selected",
+    "enabled": "Enabled",
+    "notGitProject": "Current project is not a Git repository. Task isolation feature is unavailable.",
+    "initGitProject": "To use this feature, please initialize the project as a Git repository first.",
+    "isolatedModeActive": "Tasks will run in isolated workspaces (git worktree), not interfering with each other",
+    "isolatedModeInactive": "When enabled, each task runs in a separate working directory to avoid conflicts",
+    "onlyGitProject": "Only Git projects can enable task isolation"
+  },
+  "conversationHistory": {
+    "title": "Conversation History",
+    "round": "{{round}} round(s)",
+    "roundInstruction": "Round {{round}} Instruction",
+    "claudeReply": "Claude Reply",
+    "waitingReview": "Waiting for review",
+    "needReviewOrContinue": "Needs review or additional instructions",
+    "duration": "Duration",
+    "cost": "Cost",
+    "claudeThinking": "Claude is thinking...",
+    "yourAnswer": "Your Answer",
+    "questions": "questions"
+  },
+  "toast": {
+    "sessionIdCopied": "Session ID copied to clipboard",
+    "copyFailed": "Copy failed, please copy manually"
+  },
+  "error": {
+    "title": "Oops, Something went wrong",
+    "unknown": "An unknown error occurred",
+    "retry": "Retry"
+  },
+  "dependency": {
+    "prerequisites": "Prerequisites",
+    "dependents": "Dependents",
+    "selector": {
+      "title": "Select Dependencies",
+      "clear": "Clear",
+      "usageScenario": "Usage Scenario",
+      "usageDescription": "When you want the new task to execute after a certain task completes, you can select that task as a dependency.",
+      "waitingMessage": "The new task will wait until the dependency completes.",
+      "noTasksAvailable": "No tasks available",
+      "noTasksHint": "Please create tasks first. You can select unfinished tasks as dependencies.",
+      "unfinishedSection": "Unfinished - Selectable",
+      "finishedSection": "Finished - Cannot depend",
+      "selectedCount": "selected",
+      "dependOn": "Depend on"
+    },
+    "forkSelector": {
+      "title": "Select Task to Inherit Context",
+      "clear": "Clear",
+      "usageScenario": "Usage Scenario",
+      "usageDescription": "When you want the new task to continue the previous conversation, you can select a completed task. The new task will inherit the full conversation history from the selected task, as if it was never interrupted.",
+      "projectFilter": "Current filter: only showing tasks from project",
+      "noTasksProject": "No completed tasks with conversation history in this project",
+      "noTasks": "No completed tasks with conversation history yet",
+      "selectedContext": "Context Selected",
+      "inheritContext": "Inherit Context",
+      "project": "Project"
+    }
+  },
+  "messages": {
+    "processing": "Processing...",
+    "cancelling": "Cancelling...",
+    "submitting": "Submitting...",
+    "sending": "Sending..."
+  },
+  "planStatus": {
+    "generating": "Generating Plan",
+    "generatingMessage": "Claude is analyzing and generating plan...",
+    "questionsTitle": "Decision Items to Confirm",
+    "pendingAnswers": "pending answers",
+    "approved": "Plan Ready",
+    "approvedMessage": "Plan has been generated, no questions to confirm.",
+    "executing": "Executing Plan",
+    "executingMessage": "Executing based on approved plan..."
+  },
+  "planActions": {
+    "adjustPlan": "Need to adjust the plan?",
+    "adjustPlanPlaceholder": "Enter what you'd like to adjust, or add more context...",
+    "questionAboutPlan": "Have questions about the plan?",
+    "questionPlaceholder": "Enter your questions about the plan, or add more context..."
+  },
+  "logs": {
+    "title": "Execution Logs",
+    "empty": "No logs"
+  },
+  "status": {
+    "realtime": "Real-time",
+    "running": "Running..."
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Please enter access password",
+    "placeholder": "Please enter password",
+    "button": "Login",
+    "loggingIn": "Logging in...",
+    "loginFailed": "Login failed",
+    "logout": "Logout"
+  }
+}

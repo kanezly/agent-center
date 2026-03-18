@@ -1,0 +1,40 @@
+{
+  "task": {
+    "queued": "Queued",
+    "running": "Running",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "pending": "Pending",
+    "reviewing": "Reviewing",
+    "post_processing": "Post-processing"
+  },
+  "plan": {
+    "generating": "Generating",
+    "reviewing": "Reviewing",
+    "approved": "Approved",
+    "executing": "Executing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "running": "Running",
+    "queued": "Queued"
+  },
+  "worker": {
+    "idle": "Idle",
+    "busy": "Busy"
+  },
+  "filterGroup": {
+    "all": "All",
+    "todo-agent": "TODO-Agent",
+    "todo-human": "TODO-Human",
+    "done": "Done"
+  },
+  "logEvent": {
+    "assistant": "Assistant",
+    "tool_use": "Tool Use",
+    "tool_result": "Tool Result",
+    "result": "Result",
+    "error": "Error",
+    "system": "System"
+  }
+}

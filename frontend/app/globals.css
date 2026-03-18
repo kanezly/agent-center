@@ -1,0 +1,768 @@
+/**
+ * PyroAlpha - "Warm Humanism" Design System (Simplified)
+ * 温暖人文主义主题 - 简化版
+ *
+ * Design Philosophy:
+ * - Exchange: 强调"流动"、"连接"与"协作"的视觉语言
+ * - Agent First: Agent作为第一公民的主体性和伙伴关系
+ * - Warm cream-based palette with明度梯度
+ * - No gradients, solid colors only
+ * - Subtle shadows for depth (no glow effects)
+ * - High contrast ratios for accessibility (WCAG AA compliant)
+ * - 可读性优先，降低认知负荷
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ============ Core Design Tokens (核心设计令牌) ============ */
+
+  /* Background (背景色 - 5个) */
+  --bg-primary: #FFFEF9;      /* 主背景 */
+  --bg-secondary: #F9F6F1;    /* 次背景 */
+  --bg-elevated: #FDF9F2;     /* 浮层 */
+  --bg-tertiary: #F3EDE5;     /* 三级背景 - 沙色 */
+  --bg-dark: #2D2926;         /* 深色 */
+
+  /* Navigation (导航栏) */
+  --navbar-bg: rgba(255, 254, 249, 0.8);  /* 毛玻璃背景 */
+
+  /* Text (文字色 - 3个) */
+  --text-primary: #2D2926;    /* 主文字 */
+  --text-secondary: #5C5651;  /* 次文字 */
+  --text-muted: #B8ACA3;      /* 弱文字 */
+
+  /* Border (边框色 - 3个) */
+  --border-subtle: rgba(45, 41, 38, 0.08);
+  --border-visible: rgba(45, 41, 38, 0.15);
+  --border-focus: rgba(45, 41, 38, 0.3);
+
+  /* Semantic Colors (语义色 - 5个) */
+  --color-info: #7BB3D0;      /* 蓝色 */
+  --color-success: #7CB882;   /* 绿色 */
+  --color-warning: #E5A55D;   /* 橙色 */
+  --color-error: #E57373;     /* 红色 */
+  --color-neutral: #8E8E93;   /* 灰色 */
+
+  /* Extended Semantic Colors (扩展语义色) */
+  --color-accent: #7C44A6;              /* 紫色 - 用于 Fork/上下文继承 */
+  --color-accent-subtle: rgba(124, 68, 166, 0.1);
+  --color-accent-border: rgba(124, 68, 166, 0.2);
+
+  /* Accent colors - 灰色强调系 */
+  --accent: rgba(45, 41, 38, 0.08);
+  --accent-hover: rgba(45, 41, 38, 0.12);
+  --accent-active: rgba(45, 41, 38, 0.18);
+  --accent-subtle: rgba(45, 41, 38, 0.04);
+
+  /* Shadows (阴影) */
+  --shadow-sm: 0 1px 2px rgba(45, 41, 38, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(45, 41, 38, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(45, 41, 38, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(45, 41, 38, 0.1);
+
+  /* iOS 风格阴影 */
+  --shadow-ios-sm: 0 1px 2px rgba(45, 41, 38, 0.04);
+  --shadow-ios-md: 0 4px 8px rgba(45, 41, 38, 0.06);
+  --shadow-ios-lg: 0 8px 24px rgba(45, 41, 38, 0.08);
+
+  /* Popover 专用阴影 */
+  --shadow-popover-sm: 0 4px 12px rgba(45, 41, 38, 0.08);
+  --shadow-popover-md: 0 8px 24px rgba(45, 41, 38, 0.12);
+  --shadow-popover-lg: 0 12px 40px rgba(45, 41, 38, 0.15);
+
+  /* Transitions (过渡) */
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+
+  /* iOS 动画曲线 */
+  --ios-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ios-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* Toggle 组件变量 (ModernToggle) */
+  --toggle-width: 52px;
+  --toggle-height: 28px;
+  --toggle-knob-size: 24px;
+  --toggle-bg-on: linear-gradient(135deg, #8B7D6B 0%, #6F6355 100%);
+  --toggle-bg-off: #E5E5E7;
+  --toggle-knob: #FFFFFF;
+  --toggle-shadow-on: 0 2px 8px rgba(139, 125, 107, 0.4);
+  --toggle-shadow-off: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* Z-Index (层级) */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ============================================================================
+   Global Styles (全局样式)
+   ============================================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus Ring (焦点环) */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Selection (选中态) */
+::selection {
+  background-color: rgba(45, 41, 38, 0.12);
+  color: var(--text-primary);
+}
+
+/* Scrollbar (滚动条) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-visible);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-focus);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-visible) transparent;
+}
+
+/* ============================================================================
+   Component Utilities (组件工具类)
+   ============================================================================ */
+
+/* Glass Effect (玻璃态效果) */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Hover Card (悬停卡片) */
+.hover-card {
+  transition: border-color var(--transition-fast);
+}
+
+.hover-card:hover {
+  border-color: var(--border-visible);
+}
+
+/* Truncate Text (文本裁剪) */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   Markdown Styles (Markdown样式)
+   ============================================================================ */
+
+.prose {
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--text-primary);
+}
+
+.prose h1 { font-size: 2em; }
+.prose h2 { font-size: 1.5em; }
+.prose h3 { font-size: 1.25em; }
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose a:hover {
+  color: var(--color-info);
+}
+
+.prose code {
+  background: var(--bg-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.prose pre {
+  background: var(--bg-dark);
+  color: var(--bg-primary);
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--text-secondary);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.prose img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.5em 1em;
+  text-align: left;
+}
+
+.prose th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   Responsive Utilities (响应式工具类)
+   ============================================================================ */
+
+/* Breakpoint reference:
+   - xs:  0-375px   (超小屏手机 - iPhone SE 等)
+   - sm:  375-480px (小屏手机)
+   - md:  480-640px (大屏手机/小平板)
+   - lg:  640-768px (平板)
+   - xl:  768-1024px (小桌面)
+   - 2xl: 1024px+ (大桌面)
+*/
+
+/* Mobile First - Base styles for all devices */
+.mobile-safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.mobile-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Extra Extra Small Mobile (<=375px) - iPhone SE 等超小屏 */
+@media (max-width: 375px) {
+  .hide-xxs {
+    display: none !important;
+  }
+
+  .text-xs-mobile {
+    font-size: 11px !important;
+  }
+
+  .text-sm-mobile {
+    font-size: 12px !important;
+  }
+
+  /* 卡片列表单列布局 */
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* 移动端优化的卡片间距 */
+  .card-mobile {
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  /* 移动端导航栏高度 */
+  .nav-mobile {
+    height: 48px !important;
+  }
+
+  /* 触摸目标最小尺寸 */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* 移动端字体调整 - 防止 iOS 缩放 */
+  body, button, input, select, textarea {
+    font-size: 16px;
+  }
+
+  /* 超小屏字体进一步缩小 */
+  .xs\\:text-[10px] {
+    font-size: 10px !important;
+  }
+
+  .xs\\:text-[11px] {
+    font-size: 11px !important;
+  }
+
+  .xs\\:text-[13px] {
+    font-size: 13px !important;
+  }
+
+  .xs\\:max-w-\\[100px\\] {
+    max-width: 100px !important;
+  }
+}
+
+/* Extra Small Mobile (375px-480px) */
+@media (min-width: 376px) and (max-width: 480px) {
+  .hide-xs {
+    display: none !important;
+  }
+
+  .text-xs-mobile {
+    font-size: 12px;
+  }
+
+  .text-sm-mobile {
+    font-size: 14px;
+  }
+
+  /* 卡片列表单列布局 */
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* 移动端优化的卡片间距 */
+  .card-mobile {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+
+  /* 移动端导航栏高度 */
+  .nav-mobile {
+    height: 48px !important;
+  }
+
+  /* 触摸目标最小尺寸 */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* 移动端字体调整 */
+  body, button, input, select, textarea {
+    font-size: 16px; /* 防止 iOS 缩放 */
+  }
+}
+
+/* Small Mobile (480px-640px) */
+@media (min-width: 481px) and (max-width: 640px) {
+  .hide-sm {
+    display: none !important;
+  }
+
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Medium Mobile / Small Tablet (640px-768px) */
+@media (min-width: 641px) and (max-width: 768px) {
+  .hide-md {
+    display: none !important;
+  }
+
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Tablet (768px-1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hide-lg {
+    display: none !important;
+  }
+
+  .hide-desktop {
+    display: none !important;
+  }
+
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Desktop (1024px-1280px) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .hide-xl {
+    display: none !important;
+  }
+
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+/* Large Desktop (>1280px) */
+@media (min-width: 1281px) {
+  .hide-2xl {
+    display: none !important;
+  }
+}
+
+/* Desktop-specific (>=769px) */
+@media (min-width: 769px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+
+  .desktop-only {
+    display: block !important;
+  }
+
+  /* 桌面端隐藏移动端筛选器，显示桌面端筛选器 */
+  .mobile-filter-row {
+    display: none !important;
+  }
+
+  .desktop-filter-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* 桌面端配置栏水平布局 */
+  .mobile-config-stack {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .mobile-config-stack > * {
+    flex: 0 0 auto !important;
+  }
+
+  /* 桌面端隐藏高级选项切换按钮 */
+  .mobile-advanced-toggle {
+    display: none !important;
+  }
+
+  /* 桌面端按钮堆叠水平布局 */
+  .mobile-button-stack {
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .mobile-button-stack > * {
+    flex: 0 1 auto !important;
+  }
+
+  /* Advanced Options Popover 移动端单列布局 */
+  .advanced-options-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile-specific (<769px) */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: initial !important;
+  }
+
+  /* 主内容区内边距优化 */
+  main {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* 移动端卡片最小宽度 */
+  .task-grid,
+  .unified-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 移动端配置堆叠全宽 */
+  .mobile-config-stack {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .mobile-config-stack > * {
+    width: 100% !important;
+  }
+
+  /* 移动端任务模式切换全宽 */
+  .mobile-config-stack > div:first-child {
+    width: 100% !important;
+    justify-content: stretch !important;
+  }
+
+  .mobile-config-stack > div:first-child > button {
+    flex: 1 !important;
+    min-width: 80px !important;
+  }
+
+  /* 移动端筛选器布局优化 */
+  .mobile-filter-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* 移动端按钮堆叠全宽垂直排列 */
+  .mobile-button-stack {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+
+  .mobile-button-stack > * {
+    width: 100% !important;
+  }
+
+  /* 移动端触摸友好样式 */
+  .mobile-task-input {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-task-input input {
+    font-size: 16px !important; /* 防止 iOS 缩放 */
+  }
+
+  /* 移动端输入框增强高度 */
+  .mobile-input-enhanced {
+    min-height: 72px !important; /* 移动端增加高度，约 3 行 */
+    font-size: 16px !important;
+  }
+
+  /* 移动端配置项缩小 */
+  .mobile-config-item {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 6px 10px !important;
+  }
+
+  .mobile-config-item svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .mobile-config-item span {
+    font-size: 13px !important;
+  }
+
+  /* 移动端按钮缩小 */
+  .mobile-button-stack .mobile-action-button {
+    height: 36px !important;
+    min-height: 36px !important;
+    font-size: 13px !important;
+    padding: 0 12px !important;
+  }
+
+  .mobile-button-stack .mobile-action-button svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+/* Touch-friendly mode (for devices with coarse pointers) */
+@media (pointer: coarse) {
+  .touch-optimized {
+    min-height: 44px;
+    min-width: 44px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  button, a, input, select {
+    min-height: 44px;
+  }
+}
+
+/* ============================================================================
+   Animation Keyframes (动画关键帧)
+   ============================================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes cardLift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes buttonPress {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popoverSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================================================
+   Print Styles (打印样式)
+   ============================================================================ */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

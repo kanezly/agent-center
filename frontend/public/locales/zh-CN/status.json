@@ -1,0 +1,40 @@
+{
+  "task": {
+    "queued": "排队中",
+    "running": "执行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "cancelled": "已取消",
+    "pending": "挂起",
+    "reviewing": "待检视",
+    "post_processing": "代码合并中"
+  },
+  "plan": {
+    "generating": "生成中",
+    "reviewing": "待检视",
+    "approved": "已批准",
+    "executing": "执行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "running": "运行中",
+    "queued": "排队中"
+  },
+  "worker": {
+    "idle": "空闲",
+    "busy": "忙碌"
+  },
+  "filterGroup": {
+    "all": "全部",
+    "todo-agent": "TODO-Agent",
+    "todo-human": "TODO-Human",
+    "done": "已完成"
+  },
+  "logEvent": {
+    "assistant": "助手",
+    "tool_use": "工具调用",
+    "tool_result": "工具结果",
+    "result": "结果",
+    "error": "错误",
+    "system": "系统"
+  }
+}

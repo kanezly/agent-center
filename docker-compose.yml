@@ -1,0 +1,61 @@
+# AgentCenter - Docker Compose
+# AgentCenter for Autonomous Task Management
+#
+# Quick start:
+#   docker-compose up -d
+#
+# Services:
+#   - backend: FastAPI Python backend (port 8010)
+#   - frontend: Next.js 14 frontend (port 3010)
+
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ac-backend
+    ports:
+      - "8010:8010"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./agent-center.db
+      - CORS_ORIGINS=http://localhost:3010,http://frontend:3010
+      - DEBUG=true
+      - AC_MAX_CONCURRENT=5
+      - IS_SANDBOX=1
+    volumes:
+      - backend-data:/app/data
+    command: uvicorn app:app --host 0.0.0.0 --port 8010
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: ac-frontend
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_DOMAIN=http://backend:8010
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3010"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  backend-data:
+
+networks:
+  default:
+    name: ac-network

@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "AgentCenter",
+    "description": "管理多个并行 Claude Code CLI 实例",
+    "description_en": "Manage multiple parallel Claude Code CLI instances"
+  },
+  "navigation": {
+    "tasks": "任务",
+    "projects": "项目",
+    "inbox": "待办",
+    "settings": "设置",
+    "history": "历史"
+  },
+  "actions": {
+    "execute": "执行任务",
+    "execute_task": "执行",
+    "stash": "暂存",
+    "cancel": "取消",
+    "delete": "删除",
+    "delete_task": "删除任务",
+    "approve": "批准执行",
+    "add_instruction": "追加指令",
+    "retry": "重试",
+    "cancel_task": "取消任务",
+    "new_project": "新建项目",
+    "link_project": "关联项目",
+    "loading": "加载中...",
+    "save": "保存",
+    "close": "关闭",
+    "confirm": "确认",
+    "back": "返回",
+    "refresh": "刷新",
+    "edit": "编辑",
+    "view": "查看",
+    "copy": "复制",
+    "copied": "已复制"
+  },
+  "placeholders": {
+    "task_execute": "描述目标，执行任务",
+    "task_plan": "描述目标，生成详细计划后再执行",
+    "search": "搜索...",
+    "select_project": "选择项目",
+    "select_task": "选择任务"
+  },
+  "messages": {
+    "inbox_added": "已添加到待办清单",
+    "task_created": "任务已创建",
+    "plan_created": "计划已创建",
+    "session_copied": "Session ID 已复制到剪贴板",
+    "copy_failed": "复制失败，请手动复制",
+    "no_tasks": "暂无任务",
+    "no_pending_tasks": "无待处理任务",
+    "no_review_tasks": "无待审核任务",
+    "confirm_delete": "确认删除？",
+    "deleting": "删除中...",
+    "operation_success": "操作成功",
+    "operation_failed": "操作失败"
+  },
+  "labels": {
+    "project_name": "项目名称",
+    "project_path": "项目路径",
+    "display_name": "显示名称",
+    "project_description": "项目描述",
+    "task_description": "任务描述",
+    "plan_goal": "计划目标",
+    "created_by": "创建者",
+    "created_at": "创建时间",
+    "updated_at": "更新时间",
+    "worker": "工作进程",
+    "session_id": "Session ID"
+  },
+  "filters": {
+    "sort_by": "排序方式",
+    "updated_time": "更新时间",
+    "created_time": "创建时间",
+    "desc": "降序 (最新优先)",
+    "asc": "升序 (最早优先)"
+  },
+  "task": {
+    "mode": {
+      "execute": "执行模式",
+      "plan": "计划模式"
+    },
+    "isolation": {
+      "enabled": "隔离模式",
+      "disabled": "共享模式",
+      "tooltip": "隔离模式下任务拥有独立的会话历史"
+    },
+    "auto_approve": {
+      "enabled": "自动批准",
+      "disabled": "手动批准",
+      "tooltip": "自动批准模式下计划将直接执行无需确认"
+    },
+    "dependencies": "依赖任务",
+    "fork_from": "Fork 自",
+    "no_dependencies": "无依赖",
+    "no_fork": "无 Fork"
+  },
+  "inbox": {
+    "title": "待办清单",
+    "empty": "暂无待办事项",
+    "convert_to_task": "转换为任务",
+    "delete": "删除"
+  },
+  "project": {
+    "create": "创建项目",
+    "create_description": "创建一个新项目",
+    "path_placeholder": "例如：/home/user/my-project",
+    "name_placeholder": "例如：我的项目",
+    "description_placeholder": "例如：这是一个示例项目",
+    "is_git": "Git 仓库",
+    "select": "选择项目",
+    "no_project": "暂无项目",
+    "no_git_warning": "非 Git 项目无法使用隔离模式"
+  },
+  "time": {
+    "just_now": "刚刚",
+    "minutes_ago": "{{minutes}} 分钟前",
+    "hours_ago": "{{hours}} 小时前",
+    "days_ago": "{{days}} 天前",
+    "weeks_ago": "{{weeks}} 周前",
+    "months_ago": "{{months}} 月前",
+    "years_ago": "{{years}} 年前"
+  }
+}

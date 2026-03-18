@@ -1,0 +1,57 @@
+# Backend
+backend/__pycache__
+backend/*.pyc
+backend/*.pyo
+backend/.pytest_cache
+backend/tests
+backend/.env
+backend/data
+backend/*.db
+backend/Dockerfile
+backend/.venv
+
+# Frontend
+frontend/node_modules
+frontend/.next
+frontend/out
+frontend/public/screenshots
+frontend/.turbo
+frontend/Dockerfile
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Docker Compose (not used in build context)
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Logs
+*.log
+logs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage
+htmlcov
+.tox
+.nox
+
+# Misc
+tmp
+temp
+.cache

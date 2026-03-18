@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "AgentCenter",
+    "description": "Manage multiple parallel Claude Code CLI instances"
+  },
+  "navigation": {
+    "tasks": "Tasks",
+    "projects": "Projects",
+    "inbox": "Inbox",
+    "settings": "Settings",
+    "history": "History"
+  },
+  "actions": {
+    "execute": "Execute Task",
+    "execute_task": "Execute",
+    "stash": "Stash",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "delete_task": "Delete Task",
+    "approve": "Approve & Execute",
+    "add_instruction": "Add Instruction",
+    "retry": "Retry",
+    "cancel_task": "Cancel Task",
+    "new_project": "New Project",
+    "link_project": "Link Project",
+    "loading": "Loading...",
+    "save": "Save",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "refresh": "Refresh",
+    "edit": "Edit",
+    "view": "View",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "placeholders": {
+    "task_execute": "Describe your goal, execute task",
+    "task_plan": "Describe your goal, generate plan first",
+    "search": "Search...",
+    "select_project": "Select a project",
+    "select_task": "Select a task"
+  },
+  "messages": {
+    "inbox_added": "Added to inbox",
+    "task_created": "Task created",
+    "plan_created": "Plan created",
+    "session_copied": "Session ID copied to clipboard",
+    "copy_failed": "Copy failed, please copy manually",
+    "no_tasks": "No tasks",
+    "no_pending_tasks": "No pending tasks",
+    "no_review_tasks": "No tasks pending review",
+    "confirm_delete": "Confirm delete?",
+    "deleting": "Deleting...",
+    "operation_success": "Operation successful",
+    "operation_failed": "Operation failed"
+  },
+  "labels": {
+    "project_name": "Project Name",
+    "project_path": "Project Path",
+    "display_name": "Display Name",
+    "project_description": "Project Description",
+    "task_description": "Task Description",
+    "plan_goal": "Plan Goal",
+    "created_by": "Created By",
+    "created_at": "Created At",
+    "updated_at": "Updated At",
+    "worker": "Worker",
+    "session_id": "Session ID"
+  },
+  "filters": {
+    "sort_by": "Sort By",
+    "updated_time": "Updated Time",
+    "created_time": "Created Time",
+    "desc": "Descending (Newest First)",
+    "asc": "Ascending (Oldest First)"
+  },
+  "task": {
+    "mode": {
+      "execute": "Execute Mode",
+      "plan": "Plan Mode"
+    },
+    "isolation": {
+      "enabled": "Isolated",
+      "disabled": "Shared",
+      "tooltip": "In isolated mode, tasks have independent session history"
+    },
+    "auto_approve": {
+      "enabled": "Auto Approve",
+      "disabled": "Manual Approve",
+      "tooltip": "In auto approve mode, plans will be executed directly without confirmation"
+    },
+    "dependencies": "Dependencies",
+    "fork_from": "Fork From",
+    "no_dependencies": "No dependencies",
+    "no_fork": "No fork"
+  },
+  "inbox": {
+    "title": "Inbox",
+    "empty": "No inbox items",
+    "convert_to_task": "Convert to Task",
+    "delete": "Delete"
+  },
+  "project": {
+    "create": "Create Project",
+    "create_description": "Create a new project",
+    "path_placeholder": "e.g., /home/user/my-project",
+    "name_placeholder": "e.g., My Project",
+    "description_placeholder": "e.g., This is a sample project",
+    "is_git": "Git Repository",
+    "select": "Select Project",
+    "no_project": "No projects",
+    "no_git_warning": "Non-Git projects cannot use isolated mode"
+  },
+  "time": {
+    "just_now": "Just now",
+    "minutes_ago": "{{minutes}} minutes ago",
+    "hours_ago": "{{hours}} hours ago",
+    "days_ago": "{{days}} days ago",
+    "weeks_ago": "{{weeks}} weeks ago",
+    "months_ago": "{{months}} months ago",
+    "years_ago": "{{years}} years ago"
+  }
+}

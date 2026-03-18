@@ -1,0 +1,324 @@
+{
+  "task": {
+    "queued": "排队中",
+    "running": "执行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "cancelled": "已取消",
+    "pending": "挂起",
+    "reviewing": "待检视",
+    "post_processing": "代码合并中",
+    "mode": {
+      "plan": "计划模式"
+    },
+    "dependencies": "依赖任务",
+    "isolation": {
+      "enabled": "隔离执行"
+    },
+    "auto_approve": {
+      "enabled": "自动批准"
+    }
+  },
+  "plan": {
+    "generating": "生成中",
+    "reviewing": "待检视",
+    "approved": "已批准",
+    "executing": "执行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "running": "运行中",
+    "queued": "排队中",
+    "submitAnswer": "提交答案"
+  },
+  "worker": {
+    "idle": "空闲",
+    "busy": "忙碌"
+  },
+  "filterGroup": {
+    "all": "全部",
+    "todo-agent": "TODO-Agent",
+    "todo-human": "TODO-Human",
+    "done": "已完成"
+  },
+  "logEvent": {
+    "assistant": "助手",
+    "tool_use": "工具调用",
+    "tool_result": "工具结果",
+    "result": "结果",
+    "error": "错误",
+    "system": "系统"
+  },
+  "taskInput": {
+    "stash": "暂存",
+    "execute": "执行",
+    "executeTask": "执行任务",
+    "executingInbox": "正在执行待办任务",
+    "cancel": "取消",
+    "placeholderExecute": "描述目标，执行任务",
+    "placeholderPlan": "描述目标，生成详细计划后再执行",
+    "toastInboxAdded": "已添加到待办清单",
+    "toastTaskCreated": "任务已创建",
+    "toastPlanCreated": "计划已创建"
+  },
+  "project": {
+    "linkProject": "关联项目",
+    "loading": "加载中...",
+    "noProject": "不关联项目",
+    "createProject": "新建项目...",
+    "newProject": "新建项目",
+    "createDescription": "创建一个新项目",
+    "nameLabel": "项目名称 *",
+    "pathLabel": "项目路径 *",
+    "displayNameLabel": "显示名称",
+    "descriptionLabel": "项目描述",
+    "namePlaceholder": "my-project",
+    "pathPlaceholder": "选择项目文件夹路径",
+    "displayNamePlaceholder": "我的项目",
+    "descriptionPlaceholder": "项目描述...",
+    "cancel": "取消",
+    "creating": "创建中...",
+    "create": "创建项目",
+    "confirmDelete": "确定要删除项目",
+    "deleteConfirm": "吗？\n\n删除后该项目相关的所有记录都将被删除，包括任务、日志、对话记录等。此操作不可撤销！"
+  },
+  "taskConfig": {
+    "planMode": "计划模式",
+    "executeMode": "执行模式",
+    "planModeDesc": "生成计划，批准后再执行",
+    "executeModeDesc": "直接执行任务",
+    "isolatedMode": "隔离模式",
+    "isolatedModeDesc": "在 Git worktree 隔离环境中执行",
+    "autoApprove": "自动批准",
+    "autoApproveDesc": "任务完成后自动批准",
+    "dependencies": "依赖",
+    "dependenciesDesc": "选择未完成的任务作为前置依赖，新任务会等待依赖任务完成后再执行。",
+    "forkFrom": "继承上下文",
+    "forkFromDesc": "选择已完成的任务继承其对话上下文，新任务将延续之前任务的对话内容。",
+    "selectProject": "选择项目",
+    "selectTask": "选择任务",
+    "noProject": "未选择项目",
+    "noTask": "未选择任务",
+    "nonGitProjectWarning": "非 Git 项目无法使用隔离模式",
+    "dependenciesLabel": "依赖任务",
+    "dependenciesDescLong": "选择未完成的任务作为前置依赖，新任务会等待依赖任务完成后再执行。",
+    "noRunningTasks": "没有进行中的任务",
+    "noRunningTasksInProject": "该项目下没有进行中的任务",
+    "forkFromLabel": "继承上下文",
+    "forkFromDescLong": "选择已完成的任务继承其对话上下文，新任务将延续之前任务的对话内容。",
+    "noCompletedTasks": "没有已完成的任务",
+    "noCompletedTasksInProject": "该项目下没有已完成的任务",
+    "isolatedModeLabel": "任务隔离",
+    "isolatedModeActive": "任务将在独立工作区（git worktree）执行，互不干扰",
+    "isolatedModeInactive": "启用后，每个任务在独立的工作目录中运行，避免文件冲突",
+    "notGitProject": "当前项目不是 Git 仓库，无法使用任务隔离功能。",
+    "initGitProject": "如需使用，请先将项目初始化为 Git 仓库。",
+    "advancedOptions": "高级选项",
+    "isolatedModeTooltip": "在隔离环境中执行任务。关联 Git 项目时使用 Git worktree 独立分支（多任务并行避免冲突）；独立任务时在独立目录下执行（安全隔离）。",
+    "autoApproveTooltip": "任务完成后自动批准，跳过检视状态直接进入下一环节。"
+  },
+  "folderPicker": {
+    "placeholder": "选择文件夹路径",
+    "browse": "浏览",
+    "selectFolder": "选择文件夹",
+    "loading": "加载中...",
+    "emptyFolder": "此文件夹为空",
+    "selectThisFolder": "选择此文件夹"
+  },
+  "common": {
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "confirm": "确认",
+    "cancel": "取消",
+    "delete": "删除",
+    "save": "保存",
+    "close": "关闭",
+    "planTag": "计划",
+    "realtime": "实时"
+  },
+  "time": {
+    "justNow": "刚刚",
+    "minutesAgo": "{{minutes}} 分钟前",
+    "hoursAgo": "{{hours}} 小时前",
+    "daysAgo": "{{days}} 天前",
+    "weeksAgo": "{{weeks}} 周前",
+    "monthsAgo": "{{months}} 月前",
+    "yearsAgo": "{{years}} 年前"
+  },
+  "unifiedList": {
+    "placeholder": "添加新任务或计划...",
+    "noTasks": "暂无任务",
+    "noTasksDesc": "输入任务描述开始执行",
+    "noPendingTasks": "无待处理任务",
+    "noPendingTasksDesc": "Agent 正在空闲中",
+    "noReviewTasks": "无待审核任务",
+    "noReviewTasksDesc": "没有需要人工处理的任务",
+    "noDoneTasks": "无已完成任务",
+    "noDoneTasksDesc": "完成的任务会显示在这里",
+    "taskDeleted": "任务已删除",
+    "taskCreated": "任务已创建",
+    "planCreated": "计划已创建",
+    "planTag": "计划",
+    "deleteTaskTitle": "删除任务",
+    "loading": "加载中...",
+    "lastUpdated": "更新于"
+  },
+  "inbox": {
+    "title": "待办清单",
+    "empty": "暂无待办事项",
+    "convertToTask": "转换为任务",
+    "delete": "删除",
+    "badgeTitle": "待办事项"
+  },
+  "filters": {
+    "updatedTime": "更新时间",
+    "createdTime": "创建时间",
+    "desc": "降序 (最新优先)",
+    "asc": "升序 (最早优先)",
+    "allProjects": "全部项目"
+  },
+  "projectFilter": {
+    "allProjects": "全部",
+    "noProject": "独立任务",
+    "noTasksInProject": "该项目下暂无任务",
+    "noTasksInProjectDesc": "尝试切换到其他项目或全部"
+  },
+  "actions": {
+    "delete": "删除任务",
+    "close": "关闭",
+    "logout": "退出登录",
+    "clear": "清空",
+    "expand": "展开更多",
+    "collapse": "收起",
+    "copy": "复制",
+    "approve": "✅ 完成",
+    "addInstruction": "➕ 追加指令",
+    "retry": "🔄 重试",
+    "cancelTask": "取消任务",
+    "approveExecute": "批准执行",
+    "send": "发送",
+    "cancel": "取消",
+    "execute": "执行"
+  },
+  "labels": {
+    "planGoal": "计划目标：",
+    "taskDescription": "任务描述：",
+    "sessionId": "Session ID"
+  },
+  "taskDrawer": {
+    "loading": "加载中...",
+    "loadFailed": "加载失败"
+  },
+  "planDrawer": {
+    "loading": "加载中...",
+    "loadFailed": "加载失败"
+  },
+  "advancedOptions": {
+    "title": "高级选项",
+    "dependsOn": "依赖任务",
+    "dependsOnDesc": "选择未完成的任务作为前置依赖，新任务会等待依赖任务完成后再执行。适用于有先后顺序的任务流程。",
+    "forkFrom": "继承上下文",
+    "forkFromDesc": "选择已完成的任务继承其对话上下文，新任务将延续之前任务的对话内容，就像从未中断过一样。",
+    "isolatedMode": "任务隔离",
+    "isolatedModeDesc": "在 Git worktree 隔离环境中执行任务，每个任务在独立的工作目录中运行，适合需要修改文件且避免冲突的场景。",
+    "noDependentTasks": "没有可依赖的任务",
+    "noForkTasks": "没有可继承上下文的任务",
+    "selected": "已选",
+    "notSelected": "未选择",
+    "enabled": "已启用",
+    "notGitProject": "当前项目不是 Git 仓库，无法使用任务隔离功能。",
+    "initGitProject": "如需使用，请先将项目初始化为 Git 仓库。",
+    "isolatedModeActive": "任务将在独立工作区（git worktree）执行，互不干扰",
+    "isolatedModeInactive": "启用后，每个任务在独立的工作目录中运行，避免文件冲突",
+    "onlyGitProject": "只有 Git 项目才能启用任务隔离功能"
+  },
+  "conversationHistory": {
+    "title": "对话历史",
+    "round": "{{round}}轮",
+    "roundInstruction": "第{{round}}轮指令",
+    "claudeReply": "Claude 回复",
+    "waitingReview": "等待检视",
+    "needReviewOrContinue": "需要检视或追加指令",
+    "duration": "耗时",
+    "cost": "成本",
+    "claudeThinking": "Claude 正在思考中...",
+    "yourAnswer": "您的选择",
+    "questions": "个问题"
+  },
+  "toast": {
+    "sessionIdCopied": "Session ID 已复制到剪贴板",
+    "copyFailed": "复制失败，请手动复制"
+  },
+  "error": {
+    "title": "出错了",
+    "unknown": "发生了一个未知错误",
+    "retry": "重试"
+  },
+  "dependency": {
+    "prerequisites": "前序依赖",
+    "dependents": "后置依赖",
+    "selector": {
+      "title": "选择依赖任务",
+      "clear": "清空",
+      "usageScenario": "使用场景",
+      "usageDescription": "当你希望新任务在某个任务完成后再执行时，可以选择该任务作为依赖。",
+      "waitingMessage": "依赖任务执行期间，新任务会处于等待状态。",
+      "noTasksAvailable": "没有可用的任务",
+      "noTasksHint": "请先创建任务，有任务处于未完成状态时可以选择作为依赖",
+      "unfinishedSection": "未完成，可选择",
+      "finishedSection": "已完成，无法依赖",
+      "selectedCount": "已选",
+      "dependOn": "依赖任务"
+    },
+    "forkSelector": {
+      "title": "选择要继承上下文的任务",
+      "clear": "清空",
+      "usageScenario": "使用场景",
+      "usageDescription": "当你希望新任务延续之前的对话内容时，可以选择一个已完成的任务。新任务会继承选中任务与 AI 的完整对话历史，就像从未中断过一样。",
+      "projectFilter": "当前过滤：只显示项目",
+      "noTasksProject": "当前项目下还没有已完成且有对话记录的任务",
+      "noTasks": "还没有已完成且有对话记录的任务",
+      "selectedContext": "已选上下文",
+      "inheritContext": "继承上下文",
+      "project": "项目"
+    }
+  },
+  "messages": {
+    "processing": "处理中...",
+    "cancelling": "取消中...",
+    "submitting": "提交中...",
+    "sending": "执行中..."
+  },
+  "planStatus": {
+    "generating": "计划生成中",
+    "generatingMessage": "Claude 正在分析并生成计划...",
+    "questionsTitle": "需要确认的决策项",
+    "pendingAnswers": "个待回答",
+    "approved": "计划已完善",
+    "approvedMessage": "计划已生成完毕，没有需要确认的问题。",
+    "executing": "计划执行中",
+    "executingMessage": "正在根据批准的计划执行..."
+  },
+  "planActions": {
+    "adjustPlan": "需要调整计划？",
+    "adjustPlanPlaceholder": "输入您想调整的内容，或补充说明您的需求...",
+    "questionAboutPlan": "对计划有疑问？",
+    "questionPlaceholder": "输入您对计划的疑问，或补充说明您的需求..."
+  },
+  "logs": {
+    "title": "执行过程日志",
+    "empty": "暂无日志"
+  },
+  "status": {
+    "realtime": "实时",
+    "running": "执行中..."
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": "请输入访问密码",
+    "placeholder": "请输入密码",
+    "button": "登录",
+    "loggingIn": "登录中...",
+    "loginFailed": "登录失败",
+    "logout": "退出登录"
+  }
+}
