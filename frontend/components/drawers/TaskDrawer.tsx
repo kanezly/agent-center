@@ -39,11 +39,11 @@ export function TaskDrawer({ isOpen, onClose, taskId }: TaskDrawerProps) {
     queryKey: ['task', taskId],
     queryFn: () => getTask(taskId!),
     enabled: !!taskId && isOpen,
-    staleTime: 5000,  // 5 秒内使用缓存
+    staleTime: 0, // 总是认为数据过期，确保 WebSocket 事件触发时立即 refetch
     refetchInterval: (query) => {
       // 仅在 running 状态轮询
       const task = query.state.data as TaskDetail | undefined;
-      return task?.status === 'running' ? 5000 : false;
+      return task?.status === 'running' ? 3000 : false;
     },
   });
 

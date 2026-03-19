@@ -56,7 +56,8 @@ export function PlanDrawer({ isOpen, onClose, planId }: PlanDrawerProps) {
     queryKey: ['plan', planId],
     queryFn: () => getPlan(planId!),
     enabled: !!planId && isOpen,
-    refetchInterval: 2000,
+    staleTime: 0, // 总是认为数据过期，确保 WebSocket 事件触发时立即 refetch
+    refetchInterval: 2000, // 每 2 秒轮询一次
   });
 
   // 将 PlanTask 转换为 TaskDetail

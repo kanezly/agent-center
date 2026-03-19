@@ -17,6 +17,10 @@ PUBLIC_PATHS = {
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # CORS 预检请求直接放行
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
         # 公开路径跳过认证
         if request.url.path in PUBLIC_PATHS:
             return await call_next(request)

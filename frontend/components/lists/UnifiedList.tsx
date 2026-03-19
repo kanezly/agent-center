@@ -66,7 +66,8 @@ export function UnifiedList({ onTaskClick, onPlanClick }: UnifiedListProps) {
       const projectId = selectedProjectId === 'all' ? undefined : (selectedProjectId ?? -1);
       return getTasks(undefined, undefined, projectId);
     },
-    staleTime: 5000,
+    staleTime: 0, // 总是认为数据过期，确保 WebSocket 事件触发时立即 refetch
+    refetchInterval: 3000, // 每 3 秒轮询一次作为兜底
   });
 
   // 获取任务列表（带项目和状态筛选） - 用于显示
@@ -78,7 +79,8 @@ export function UnifiedList({ onTaskClick, onPlanClick }: UnifiedListProps) {
       const filterGroupParam = unifiedFilter === 'all' ? undefined : unifiedFilter;
       return getTasks(undefined, filterGroupParam, projectId);
     },
-    staleTime: 5000,
+    staleTime: 0, // 总是认为数据过期，确保 WebSocket 事件触发时立即 refetch
+    refetchInterval: 3000, // 每 3 秒轮询一次作为兜底
   });
 
   // 删除任务

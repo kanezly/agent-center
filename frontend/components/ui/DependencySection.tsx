@@ -24,7 +24,7 @@ export function DependencySection({ taskId, onTaskClick }: DependencySectionProp
   const { data: deps, isLoading: depsLoading } = useQuery({
     queryKey: ['dependencies', taskId],
     queryFn: () => getDependencies(taskId),
-    staleTime: 60000,  // 60 秒缓存
+    staleTime: 30000,  // 30 秒缓存
     enabled: !!taskId,
   });
 
@@ -34,7 +34,8 @@ export function DependencySection({ taskId, onTaskClick }: DependencySectionProp
     return deps.depends_on.map((id) => ({
       queryKey: ['dependency-task', id],  // 区分查询键，避免与主任务查询冲突
       queryFn: () => getTask(id),
-      staleTime: 30000,  // 30 秒缓存
+      staleTime: 0,  // 总是认为数据过期，确保实时性
+      refetchInterval: 3000,  // 每 3 秒轮询一次
       enabled: !!id,
     }));
   }, [deps?.depends_on]);
@@ -44,7 +45,8 @@ export function DependencySection({ taskId, onTaskClick }: DependencySectionProp
     return deps.dependent_tasks.map((id) => ({
       queryKey: ['dependency-task', id],  // 区分查询键，避免与主任务查询冲突
       queryFn: () => getTask(id),
-      staleTime: 30000,  // 30 秒缓存
+      staleTime: 0,  // 总是认为数据过期，确保实时性
+      refetchInterval: 3000,  // 每 3 秒轮询一次
       enabled: !!id,
     }));
   }, [deps?.dependent_tasks]);

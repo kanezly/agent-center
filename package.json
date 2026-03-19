@@ -1,0 +1,14 @@
+{
+  "name": "agent-center",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && cd backend && uv sync && cd ../frontend && npm install",
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"blue,green\" \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "cd backend && uv run uvicorn app:app --host 0.0.0.0 --port 8010",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -38,6 +38,8 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        - API_DOMAIN=http://backend:8010
     container_name: ac-frontend
     ports:
       - "3010:3010"

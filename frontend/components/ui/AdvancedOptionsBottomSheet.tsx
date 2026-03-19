@@ -66,7 +66,8 @@ export function AdvancedOptionsBottomSheet({
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getTasks(),
-    staleTime: 30000,
+    staleTime: 0, // 总是认为数据过期，确保实时性
+    refetchInterval: 3000, // 每 3 秒轮询一次
   });
 
   // 过滤可选择的依赖任务（未完成）

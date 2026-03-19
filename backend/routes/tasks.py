@@ -243,6 +243,14 @@ async def delete_task(task_id: int):
     if not task:
         raise HTTPException(404, "Task not found")
 
+    # 检查外键引用（调试用）
+    inbox_refs = await fetch_one(
+        "SELECT COUNT(*) as count FROM inbox WHERE related_task_id=? OR fork_from_task_id=?",
+        (task_id, task_id)
+    )
+    if inbox_refs and inbox_refs["count"] > 0:
+        logger.warning(f"Task {task_id}: Found {inbox_refs['count']} inbox references, will clear them")
+
     # 如果任务正在运行，先终止 Claude CLI 子进程
     if task["status"] == "running":
         logger.info(f"Task {task_id}: Terminating Claude CLI subprocess before deletion")
@@ -305,9 +313,11 @@ async def delete_task(task_id: int):
     # Clear self-references in tasks table
     await execute("UPDATE tasks SET parent_task_id=NULL WHERE parent_task_id=?", (task_id,))
     await execute("UPDATE tasks SET fork_from_task_id=NULL WHERE fork_from_task_id=?", (task_id,))
+
     # Clear references in inbox table
     await execute("UPDATE inbox SET related_task_id=NULL WHERE related_task_id=?", (task_id,))
     await execute("UPDATE inbox SET fork_from_task_id=NULL WHERE fork_from_task_id=?", (task_id,))
+
     # Finally delete the task
     await execute("DELETE FROM tasks WHERE id=?", (task_id,))
 

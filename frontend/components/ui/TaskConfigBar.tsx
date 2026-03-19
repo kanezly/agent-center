@@ -87,7 +87,8 @@ export function TaskConfigBar({
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getTasks(),
-    staleTime: 30000,
+    staleTime: 0, // 总是认为数据过期，确保实时性
+    refetchInterval: 3000, // 每 3 秒轮询一次
   });
 
   // 可进行中的任务（可作为依赖）- 先按状态过滤

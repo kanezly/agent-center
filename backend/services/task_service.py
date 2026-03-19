@@ -309,36 +309,6 @@ class TaskService:
                     return
 
                 logger.info(f"Task {task_id}: Post-process completed successfully")
-            elif task_snapshot.get("project_id") and task_snapshot.get("cwd"):
-                # 非隔离任务但有工作树（旧逻辑兜底）
-                from services.worktree_service import merge_and_cleanup
-                from db import fetch_one as db_fetch_one
-
-                project = await db_fetch_one("SELECT * FROM projects WHERE id=?", (task_snapshot["project_id"],))
-                if project:
-                    branch_name = f"task-{task_id}"
-                    commit_msg = f"task({task_id}): {task_snapshot.get('prompt', '')[:100]}"
-
-                    success, msg = await merge_and_cleanup(
-                        project_id=task_snapshot["project_id"],
-                        task_id=task_id,
-                        branch_name=branch_name,
-                        worktree_path=task_snapshot["cwd"],
-                        commit_msg=commit_msg,
-                    )
-
-                    if not success:
-                        logger.error(f"Task {task_id}: merge/cleanup failed: {msg}")
-                        # 恢复状态
-                        await execute("UPDATE tasks SET status='reviewing' WHERE id=?", (task_id,))
-                        from app import manager
-                        await manager.broadcast_global("task_updated", {
-                            "id": task_id,
-                            "status": "reviewing",
-                            "reason": "merge_failed",
-                            "message": msg
-                        })
-                        return
 
             # 更新状态为 completed
             await execute("UPDATE tasks SET status='completed' WHERE id=?", (task_id,))

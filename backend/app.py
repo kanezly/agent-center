@@ -262,6 +262,7 @@ def run_server():
         host="0.0.0.0",
         port=port,
         reload=False,
+        access_log=False,
     )
 
 

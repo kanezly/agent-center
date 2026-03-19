@@ -38,14 +38,15 @@ export function ForkSelector({
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getTasks(),
-    staleTime: 30000,
+    staleTime: 0, // 总是认为数据过期，确保实时性
+    refetchInterval: 3000, // 每 3 秒轮询一次
   });
 
   // 获取所有项目（用于显示项目名称）
   const { data: projects } = useQuery({
     queryKey: ['fork-projects'],
     queryFn: () => getProjects(),
-    staleTime: 60000,
+    staleTime: 60000, // 项目列表变化不频繁，可以缓存久一点
   });
 
   // 获取项目名称的辅助函数

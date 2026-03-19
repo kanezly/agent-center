@@ -56,7 +56,8 @@ export function TaskInput({
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getTasks(),
-    staleTime: 30000,
+    staleTime: 0, // 总是认为数据过期，确保实时性
+    refetchInterval: 3000, // 每 3 秒轮询一次
   });
 
   // 当 inboxConvertData 存在时，自动填充

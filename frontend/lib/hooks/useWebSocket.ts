@@ -8,9 +8,13 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useManagerStore } from '@/lib/state/atoms';
 import { getWsBaseUrl } from '@/lib/api/client';
+import type { Task } from '@/types/task';
 
 const debugLog = (...args: unknown[]) => {
-  // Debug logging disabled in production
+  // Debug logging enabled for troubleshooting
+  if (typeof window !== 'undefined') {
+    console.log('[WebSocket]', ...args);
+  }
 };
 
 interface UseWebSocketOptions {
@@ -206,10 +210,35 @@ export function useGlobalEvents() {
       if (msg.type) {
         const eventType = msg.type;
         if (['task_created', 'task_updated', 'task_cancelled'].includes(eventType)) {
-          // Invalidate task-related queries to trigger refetch
-          queryClient.invalidateQueries({ queryKey: ['tasks'] });
-          queryClient.invalidateQueries({ queryKey: ['status'] });
-          debugLog(`Received ${eventType}, invalidated queries`);
+          // Invalidate task-related queries to trigger immediate refetch
+          // Use refetchType: 'all' to refetch all matching queries immediately
+          queryClient.invalidateQueries({ queryKey: ['tasks'], refetchType: 'all' });
+          queryClient.invalidateQueries({ queryKey: ['status'], refetchType: 'all' });
+          debugLog(`Received ${eventType}, invalidated queries and triggered refetch`);
+
+          // Also update Zustand store directly for immediate UI update
+          // The backend sends: { type: "task_updated", data: { id: 123, status: "running", ... } }
+          const taskData = msg.data as Partial<Task> & { id?: number };
+          if (taskData?.id) {
+            if (eventType === 'task_cancelled') {
+              // Remove task from store using setState with callback
+              useManagerStore.setState((state) => ({
+                tasks: state.tasks.filter(t => t.id !== taskData.id),
+              }));
+              debugLog(`Removed task ${taskData.id} from Zustand store`);
+            } else if (eventType === 'task_created') {
+              // Add new task to store
+              useManagerStore.setState((state) => ({
+                tasks: [...state.tasks, taskData as Task],
+              }));
+              debugLog(`Added task ${taskData.id} to Zustand store`);
+            } else {
+              // Update task in store - use updateTask action
+              const updateTask = useManagerStore.getState().updateTask;
+              updateTask(taskData.id, taskData);
+              debugLog(`Updated Zustand store for task ${taskData.id}`);
+            }
+          }
         }
         return;
       }

@@ -35,7 +35,8 @@ export function DependencySelector({
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getTasks(),
-    staleTime: 30000,
+    staleTime: 0, // 总是认为数据过期，确保实时性
+    refetchInterval: 3000, // 每 3 秒轮询一次
   });
 
   // 为已选中的任务单独获取最新状态（实时刷新）
@@ -47,7 +48,8 @@ export function DependencySelector({
       return allTasks.filter(t => selectedTaskIds.includes(t.id));
     },
     enabled: selectedTaskIds.length > 0,
-    staleTime: 10000,
+    staleTime: 0, // 总是认为数据过期
+    refetchInterval: selectedTaskIds.length > 0 ? 2000 : false, // 有选中任务时每 2 秒轮询
   });
 
   // 使用实时刷新的已选任务数据，如果加载中则回退到普通列表

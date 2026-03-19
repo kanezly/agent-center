@@ -392,35 +392,18 @@ class RalphLoop:
                     logger.info(f"Task {task_id}: Skipping worktree creation for non-git project")
                     worktree_info = None
             elif project_id:
-                # 检查是否需要复用现有工作树（非隔离任务但已有 cwd）
-                # 复用条件：cwd 已存在 + 有 session_id (追加指令场景)
-                if cwd and os.path.exists(cwd) and session_id:
-                    # 复用现有工作树
-                    logger.info(f"Task {task_id}: Reusing existing worktree at {cwd}")
+                # 非隔离任务但有 project_id，获取项目路径作为 cwd
+                # 注意：非隔离任务不创建 worktree，直接在项目主目录执行
+                from services.project_service import ProjectService
+                project_service = ProjectService(get_connection())
+                project = await project_service.get_project(project_id)
 
-                    # 获取项目路径（主目录）- 用于后处理时的 merge 操作
-                    from services.project_service import ProjectService
-                    project_service = ProjectService(get_connection())
-                    project = await project_service.get_project(project_id)
-
-                    worktree_info = {
-                        "path": cwd,
-                        "branch": f"task-{task_id}",
-                        "project_id": project_id,
-                        "main_project_path": project["path"] if project else None,
-                    }
+                if project and project.get("path"):
+                    cwd = project["path"]
+                    logger.info(f"Task {task_id}: Using project path as cwd: {cwd}")
                 else:
-                    # 非隔离任务但有 project_id，获取项目路径作为 cwd
-                    from services.project_service import ProjectService
-                    project_service = ProjectService(get_connection())
-                    project = await project_service.get_project(project_id)
-
-                    if project and project.get("path"):
-                        cwd = project["path"]
-                        logger.info(f"Task {task_id}: Using project path as cwd: {cwd}")
-                    else:
-                        logger.warning(f"Task {task_id}: Project {project_id} not found or has no path")
-                    worktree_info = None
+                    logger.warning(f"Task {task_id}: Project {project_id} not found or has no path")
+                worktree_info = None  # 非隔离任务没有 worktree
 
             if not cwd and not worktree_info:
                 logger.warning(f"Task {task_id} has no project_id or cwd, using current directory")
