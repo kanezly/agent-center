@@ -44,6 +44,17 @@ Access http://localhost:3010
 ### Docker Deployment (Optional)
 
 ```bash
+# 1. Create configuration directories
+mkdir -p ~/agent-center/{data,config,workspace}
+
+# 2. Copy configuration files
+cp backend/.env.example ~/agent-center/config/.env
+cp ~/.claude/settings.json ~/agent-center/config/settings.json
+
+# 3. Edit configuration (optional)
+# - Edit ~/agent-center/config/.env to set password and other settings
+
+# 4. Start
 docker-compose up -d
 ```
 
@@ -136,6 +147,17 @@ npm run dev
 ### Docker Deployment
 
 ```bash
+# 1. Create configuration directories
+mkdir -p ~/agent-center/{data,config,workspace}
+
+# 2. Copy configuration files
+cp backend/.env.example ~/agent-center/config/.env
+cp ~/.claude/settings.json ~/agent-center/config/settings.json
+
+# 3. Edit configuration (optional)
+# - Edit ~/agent-center/config/.env to set password and other settings
+
+# 4. Start
 docker-compose up -d
 ```
 

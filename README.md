@@ -44,6 +44,17 @@ npm run dev
 ### Docker 部署（可选）
 
 ```bash
+# 1. 创建配置目录
+mkdir -p ~/agent-center/{data,config,workspace}
+
+# 2. 复制配置文件
+cp backend/.env.example ~/agent-center/config/.env
+cp ~/.claude/settings.json ~/agent-center/config/settings.json
+
+# 3. 编辑配置（可选）
+# - 编辑 ~/agent-center/config/.env，设置密码等配置
+
+# 4. 启动
 docker-compose up -d
 ```
 
@@ -136,6 +147,17 @@ npm run dev
 ### Docker 部署
 
 ```bash
+# 1. 创建配置目录
+mkdir -p ~/agent-center/{data,config,workspace}
+
+# 2. 复制配置文件
+cp backend/.env.example ~/agent-center/config/.env
+cp ~/.claude/settings.json ~/agent-center/config/settings.json
+
+# 3. 编辑配置（可选）
+# - 编辑 ~/agent-center/config/.env，设置密码等配置
+
+# 4. 启动
 docker-compose up -d
 ```
 

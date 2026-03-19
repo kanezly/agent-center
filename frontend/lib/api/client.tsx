@@ -21,15 +21,15 @@ interface RuntimeConfig {
   WS_DOMAIN: string;
 }
 
-// Global config - will be populated from window.__RUNTIME_CONFIG__ or /api/config
+// Global config - will be populated from window.__RUNTIME_CONFIG__
 let runtimeConfig: RuntimeConfig | null = null;
 
 /**
- * Get runtime config from window object (client-side) or use defaults (server-side)
+ * Get runtime config from window object (client-side) or use defaults
  */
 function getRuntimeConfig(): RuntimeConfig {
   if (typeof window !== 'undefined' && (window as any).__RUNTIME_CONFIG__) {
-    return (window as any).__RUNTIME_CONFIG__ as RuntimeConfig;
+    runtimeConfig = (window as any).__RUNTIME_CONFIG__;
   }
   return runtimeConfig || {
     API_DOMAIN: 'http://localhost:8010',
@@ -47,15 +47,16 @@ function getRuntimeConfig(): RuntimeConfig {
 const isServer = typeof window === 'undefined';
 
 function getClientApiBaseUrl(): string {
-  // Client-side: use relative path to leverage next.config.js rewrites
-  // This avoids CORS issues by keeping requests same-origin
+  // Client-side: use full URL from runtime config
+  if (typeof window !== 'undefined' && (window as any).__RUNTIME_CONFIG__) {
+    return (window as any).__RUNTIME_CONFIG__.API_DOMAIN || '';
+  }
   return '';
 }
 
 function getServerApiBaseUrl(): string {
-  // Server-side (SSR): use environment variable or default to localhost:8010
-  // SSR requests go directly to the backend, not through rewrites
-  return process.env.API_DOMAIN || 'http://localhost:8010';
+  // Server-side: read from environment variables
+  return process.env.API_DOMAIN || '';
 }
 
 /**
@@ -67,17 +68,8 @@ export function getApiBaseUrl(): string {
 
 /**
  * Get WebSocket base URL from runtime config
- * In browser, uses the current page's host for same-origin WebSocket connection
  */
 export function getWsBaseUrl(): string {
-  // Browser environment: use current page's host for WebSocket
-  // This ensures wss:// for HTTPS sites and ws:// for HTTP
-  if (typeof window !== 'undefined') {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    return `${protocol}//${host}`;
-  }
-  // Server-side: use runtime config
   return getRuntimeConfig().WS_DOMAIN;
 }
 

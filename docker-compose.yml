@@ -12,21 +12,19 @@ version: "3.8"
 
 services:
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    image: ghcr.io/pyroalpha/agent-center-backend:v1.0.0
     container_name: ac-backend
     ports:
       - "8010:8010"
-    environment:
-      - DATABASE_URL=sqlite+aiosqlite:///./agent-center.db
-      - CORS_ORIGINS_STR=http://localhost:3010,http://frontend:3010,http://127.0.0.1:3010
-      - DEBUG=true
-      - AC_MAX_CONCURRENT=5
-      - IS_SANDBOX=1
+    env_file:
+      - ~/agent-center/config/.env
     volumes:
-      - backend-data:/app/data
-    command: uvicorn app:app --host 0.0.0.0 --port 8010
+      # 数据存储：持久化保存 SQLite 数据库等应用数据
+      - ~/agent-center/data:/app/data
+      # Claude 配置文件挂载
+      - ~/agent-center/config/settings.json:/root/.claude/settings.json
+      # 工作路径：为后端增加持久化的工作目录，用于 git worktree 等操作
+      - ~/agent-center/workspace:/root/workspace
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
       interval: 30s
@@ -35,29 +33,24 @@ services:
       start_period: 40s
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-      args:
-        - API_DOMAIN=http://backend:8010
+    image: ghcr.io/pyroalpha/agent-center-frontend:v1.0.0
     container_name: ac-frontend
     ports:
       - "3010:3010"
     environment:
       - NODE_ENV=production
-      - API_DOMAIN=http://backend:8010
-      - WS_DOMAIN=ws://backend:8010
+      # API 服务地址：若有自己的域名/IP，也可同步修改
+      - API_DOMAIN=http://localhost:8010
+      # WebSocket 服务地址：若有自己的域名/IP，也可同步修改
+      - WS_DOMAIN=ws://localhost:8010
     depends_on:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3010"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3010"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-
-volumes:
-  backend-data:
 
 networks:
   default:

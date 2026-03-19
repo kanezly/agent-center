@@ -17,10 +17,7 @@ RUN npm ci
 # Copy source code (including lib/ directory with API clients, hooks, state, utils, constants)
 COPY frontend/ .
 
-# Build application
-# API_DOMAIN is used for rewrites proxy target in next.config.js
-ARG API_DOMAIN=http://localhost:8010
-ENV API_DOMAIN=${API_DOMAIN}
+# Build application (no build-time env vars needed)
 RUN npm run build
 
 # Production stage
