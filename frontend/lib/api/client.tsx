@@ -61,16 +61,47 @@ function getServerApiBaseUrl(): string {
 
 /**
  * Get API base URL - uses runtime config on client side, env vars on server side
+ * Fallback: infer from current location for mobile access support
  */
 export function getApiBaseUrl(): string {
-  return isServer ? getServerApiBaseUrl() : getClientApiBaseUrl();
+  const url = isServer ? getServerApiBaseUrl() : getClientApiBaseUrl();
+
+  // Return if valid URL
+  if (url && url.startsWith('http')) {
+    return url;
+  }
+
+  // Fallback: infer from current location (for mobile access)
+  if (typeof window !== 'undefined') {
+    const location = window.location;
+    const apiPort = '8010';
+    const apiDomain = location.hostname;
+    return `${location.protocol}//${apiDomain}:${apiPort}`;
+  }
+
+  // Final fallback for server-side
+  return 'http://localhost:8010';
 }
 
 /**
- * Get WebSocket base URL from runtime config
+ * Get WebSocket base URL from runtime config or infer from location
  */
 export function getWsBaseUrl(): string {
-  return getRuntimeConfig().WS_DOMAIN;
+  // Use runtime config if available
+  const config = getRuntimeConfig();
+  if (config.WS_DOMAIN && config.WS_DOMAIN.startsWith('ws')) {
+    return config.WS_DOMAIN;
+  }
+
+  // Fallback: infer from current location (for mobile access)
+  if (typeof window !== 'undefined') {
+    const location = window.location;
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsPort = '8010';
+    return `${wsProtocol}//${location.hostname}:${wsPort}`;
+  }
+
+  return 'ws://localhost:8010';
 }
 
 /**
@@ -109,6 +140,7 @@ export async function apiFetch<T>(
   try {
     const response = await fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...options?.headers,

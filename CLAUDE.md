@@ -91,10 +91,10 @@ backend/
 ```
 frontend/
 ├── app/
-│   ├── layout.tsx         # Root layout with providers
+│   ├── layout.tsx         # Root layout with runtime config injection
 │   ├── page.tsx           # Main task list view
 │   ├── login/
-│   │   └── page.tsx       # Login page
+│   │   └── page.tsx       # Login page (uses apiFetch)
 │   └── api/               # Runtime config endpoint
 ├── components/
 │   ├── TaskInput.tsx      # Create task form (project, mode, deps, isolation)
@@ -103,9 +103,12 @@ frontend/
 │   ├── PlanDrawer.tsx     # Plan review and approval
 │   └── InboxCard.tsx      # Idea inbox items
 ├── lib/
-│   ├── api.ts             # API client
-│   ├── useWebSocket.ts    # WebSocket hook for logs
-│   └── store.ts           # Zustand state management
+│   ├── api/
+│   │   └── client.tsx     # API client (apiFetch, React Query)
+│   ├── state/
+│   │   └── atoms.ts       # Zustand state management
+│   └── hooks/
+│       └── useWebSocket.ts # WebSocket hook for logs
 ├── types/
 │   └── index.ts           # TypeScript type definitions
 └── middleware.ts          # Auth middleware
@@ -143,11 +146,43 @@ POST_PROCESS_TIMEOUT=600  # Post-processing timeout
 ### Frontend (`.env`)
 
 ```bash
+# 本地开发使用，Docker 部署使用运行时注入
 NEXT_PUBLIC_API_DOMAIN=http://localhost:8010
 NEXT_PUBLIC_WS_DOMAIN=ws://localhost:8010
 ```
 
+### Runtime Configuration
+
+前端支持**运行时环境变量注入**，无需在 build 时指定后端地址：
+
+- **本地开发**: 自动从 `window.location` 推断后端地址（`:3010` → `:8010`）
+- **移动端访问**: 自动从访问域名推断后端地址（`http://192.168.x.x:3010` → `http://192.168.x.x:8010`）
+- **Docker 部署**: 通过 `API_DOMAIN` 环境变量指定后端地址
+
 ## Patterns & Conventions
+
+### Authentication
+
+- Session-based authentication with HttpOnly cookies
+- Password required (set `PASSWORD` in `.env` - mandatory for security)
+- All API calls use `apiFetch()` which automatically includes credentials
+- Login page: `/login` - redirects to home on success
+
+### API Client Pattern
+
+All API calls should use `apiFetch` from `@/lib/api/client`:
+
+```typescript
+import { apiFetch } from '@/lib/api/client';
+
+// Automatically handles:
+// - API base URL (runtime config or dynamic inference)
+// - credentials: 'include' (cookies)
+// - Error handling and toast notifications
+// - JSON parsing
+
+const data = await apiFetch('/api/tasks', { method: 'POST', body: {...} });
+```
 
 ### Immutability
 

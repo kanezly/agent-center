@@ -4,6 +4,7 @@
  */
 
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { RootLayoutContent } from "./RootLayoutContent";
 import { I18nProvider } from "@/components/layout/I18nProvider";
@@ -43,13 +44,15 @@ export default function RootLayout({
 
   return (
     <html lang={defaultLocale}>
-      {/* Inject runtime config as global variable */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.__RUNTIME_CONFIG__ = ${JSON.stringify(runtimeConfig)};`,
-        }}
-      />
       <body className="font-sans bg-bg-primary text-text-primary">
+        {/* Inject runtime config as global variable - use beforeInteractive to load early */}
+        <Script
+          id="runtime-config"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.__RUNTIME_CONFIG__ = ${JSON.stringify(runtimeConfig)};`,
+          }}
+        />
         <I18nProvider>
           <RootLayoutContent>{children}</RootLayoutContent>
         </I18nProvider>
