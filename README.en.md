@@ -134,43 +134,6 @@ Access http://localhost:3010
 
 ---
 
-## Deployment Options
-
-| Method | Best For |
-|--------|----------|
-| **Local Deployment** | Personal development, quick start |
-| **Docker Deployment** | Production environment, team collaboration |
-
-### Local Deployment
-
-```bash
-npm run setup
-npm run dev
-```
-
-### Docker Deployment
-
-```bash
-# 1. Create configuration directories
-mkdir -p ~/agent-center/{data,config,workspace}
-
-# 2. Copy configuration files
-cp backend/.env.example ~/agent-center/config/.env
-cp ~/.claude/settings.json ~/agent-center/config/settings.json
-
-# 3. Edit configuration (optional)
-# - Edit ~/agent-center/config/.env to set password and other settings
-
-# 4. Start
-docker-compose up -d
-```
-
-> **Need detailed steps?** See [Full Deployment Guide](#full-deployment-guide)
->
-> **Having issues?** See [FAQ](#faq)
-
----
-
 ## Architecture Overview
 
 <details>

@@ -134,43 +134,6 @@ docker-compose up -d
 
 ---
 
-## 部署选项
-
-| 方式 | 适用场景 |
-|------|----------|
-| **本地部署** | 个人开发，快速启动 |
-| **Docker 部署** | 生产环境，团队协作 |
-
-### 本地部署
-
-```bash
-npm run setup
-npm run dev
-```
-
-### Docker 部署
-
-```bash
-# 1. 创建配置目录
-mkdir -p ~/agent-center/{data,config,workspace}
-
-# 2. 复制配置文件
-cp backend/.env.example ~/agent-center/config/.env
-cp ~/.claude/settings.json ~/agent-center/config/settings.json
-
-# 3. 编辑配置（可选）
-# - 编辑 ~/agent-center/config/.env，设置密码等配置
-
-# 4. 启动
-docker-compose up -d
-```
-
-> **需要详细步骤？** 见 [完整部署指南](#完整部署指南)
->
-> **遇到问题？** 见 [常见问题](#常见问题)
-
----
-
 ## 架构概览
 
 <details>

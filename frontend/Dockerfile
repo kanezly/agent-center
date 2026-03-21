@@ -32,23 +32,20 @@ RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 ENV API_DOMAIN=http://localhost:8010
 ENV WS_DOMAIN=ws://localhost:8010
 
-# Copy package files
+# Copy package files for production dependencies
 COPY frontend/package.json frontend/package-lock.json* ./
 
 # Install production dependencies only
 RUN npm ci --only=production
 
 # Copy built application from builder
+# Only copy .next (built artifacts), public folder, and config files
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/app ./app
-COPY --from=builder /app/components ./components
-COPY --from=builder /app/types ./types
-COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/next.config.js .
-COPY --from=builder /app/middleware.ts .
 COPY --from=builder /app/tailwind.config.ts .
+COPY --from=builder /app/postcss.config.js* .
+COPY --from=builder /app/tsconfig.json* .
 
 # Expose port
 EXPOSE 3010
