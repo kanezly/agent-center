@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { apiFetch } from '@/lib/api/client';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
@@ -17,20 +18,11 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/login', {
+      await apiFetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ password }),
-        credentials: 'include',
+        silent: true,  // 登录页面自己处理错误显示
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || t('login.loginFailed'));
-      }
 
       // 登录成功，刷新页面
       window.location.href = '/';

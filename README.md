@@ -33,7 +33,11 @@ cd agent-center
 # 2. 安装项目依赖（仅需一次）
 npm run setup
 
-# 3. 启动开发服务器
+# 3. 配置环境变量（必须）
+cp backend/.env.example backend/.env
+# 编辑 backend/.env，设置 PASSWORD=强密码
+
+# 4. 启动开发服务器
 npm run dev
 ```
 
@@ -51,8 +55,8 @@ mkdir -p ~/agent-center/{data,config,workspace}
 cp backend/.env.example ~/agent-center/config/.env
 cp ~/.claude/settings.json ~/agent-center/config/settings.json
 
-# 3. 编辑配置（可选）
-# - 编辑 ~/agent-center/config/.env，设置密码等配置
+# 3. 编辑配置（必须）
+# - 编辑 ~/agent-center/config/.env，设置 PASSWORD=强密码
 
 # 4. 启动
 docker-compose up -d
@@ -292,29 +296,14 @@ uv --version
 
 ### 配置环境变量
 
-复制并配置环境变量文件：
+只需配置后端：
 
 ```bash
-# 后端配置
 cp backend/.env.example backend/.env
-
-# 编辑 backend/.env，主要配置项：
-# - MAX_CONCURRENT=5        # 最大并发任务数
-# - PASSWORD=your_password  # 登录密码（可选，未设置则免登录）
-# - SESSION_MAX_AGE=86400   # Session 有效期（秒）
-# - DB_PATH=backend/task_manager.db  # 数据库路径
-# - TASK_TIMEOUT=3600       # 任务超时时间（秒）
-# - POST_PROCESS_TIMEOUT=600 # 后处理超时时间（秒）
-
-# 前端配置（本地开发）
-cp frontend/.env.example frontend/.env
-
-# 编辑 frontend/.env，主要配置项：
-# - NEXT_PUBLIC_API_DOMAIN=http://localhost:8010     # 后端 API 地址
-# - NEXT_PUBLIC_WS_DOMAIN=ws://localhost:8010        # WebSocket 地址
+# 编辑 backend/.env，设置 PASSWORD=强密码（必须设置！）
 ```
 
-> **注意**：前端环境变量仅在本地开发时使用。生产环境（Docker 部署）使用**运行时配置**，无需构建时传入环境变量。
+> **前端无需配置** — 自动从访问地址推断后端 API（端口 `:3010` → `:8010`），手机端访问同样自动适配。
 
 ### 分别启动（可选）
 
@@ -342,13 +331,13 @@ npm run dev    # http://localhost:3010
 
 ### Docker 运行时配置
 
-前端支持**运行时环境变量注入**，无需构建时指定后端地址：
+前端支持运行时指定后端地址（可选）：
 
 ```bash
-# 构建通用镜像（一次构建，多环境部署）
+# 构建通用镜像
 docker build -t agent-center:latest -f frontend/Dockerfile .
 
-# 运行时指定后端地址
+# 运行时指定后端地址（不指定则自动推断）
 docker run -d --name ac-frontend \
   -p 3010:3010 \
   -e API_DOMAIN=http://backend:8010 \
@@ -356,11 +345,7 @@ docker run -d --name ac-frontend \
   agent-center:latest
 ```
 
-**配置说明：**
-- `API_DOMAIN`: 后端 API 地址（必填）
-- `WS_DOMAIN`: WebSocket 地址（必填）
-- 配置通过 `/api/config` 端点动态注入到页面
-- 前端自动读取配置并发送到正确的后端地址
+> **提示**：不传入环境变量时，前端自动从浏览器访问地址推断后端 API（例：访问 `http://192.168.1.100:3010` → 后端 API 为 `http://192.168.1.100:8010`）。
 
 </details>
 
@@ -370,6 +355,25 @@ docker run -d --name ac-frontend \
 
 <details>
 <summary>查看常见问题</summary>
+
+### ⚠️ 安全警告
+
+**必须设置 `PASSWORD`！**
+
+未设置密码时，任何知道您设备 IP 的人可以：
+- 查看所有任务和日志（可能包含 API Key、代码等敏感信息）
+- 以您的名义执行任意 Claude Code 命令
+- 删除任务、修改配置
+
+**正确做法：**
+```bash
+# backend/.env
+PASSWORD=强密码（至少 12 位，包含大小写、数字、符号）
+```
+
+**后端监听说明：**
+
+后端默认监听 `0.0.0.0`，自动允许局域网访问。启动时会将本机 IP 对应的访问地址加入 CORS 白名单，手机访问无需额外配置。
 
 ### 网络访问配置
 
@@ -405,8 +409,8 @@ Access URLs:
 
 1. 确认手机和电脑在同一 WiFi 网络
 2. 检查防火墙是否开放端口 8010（后端）和 3010（前端）
-3. 修改 `frontend/.env` 中的 `NEXT_PUBLIC_API_DOMAIN` 为 `http://<本机 IP>:8010`
-4. 修改 `frontend/.env` 中的 `NEXT_PUBLIC_WS_DOMAIN` 为 `ws://<本机 IP>:8010`
+3. 确认后端监听 `0.0.0.0`（默认已支持）
+4. 前端自动适配，无需额外配置
 
 ### 防火墙配置
 

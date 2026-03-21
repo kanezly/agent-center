@@ -33,7 +33,11 @@ cd agent-center
 # 2. Install project dependencies (one-time)
 npm run setup
 
-# 3. Start development server
+# 3. Configure environment variables (required)
+cp backend/.env.example backend/.env
+# Edit backend/.env, set PASSWORD=strong_password
+
+# 4. Start development server
 npm run dev
 ```
 
@@ -51,8 +55,8 @@ mkdir -p ~/agent-center/{data,config,workspace}
 cp backend/.env.example ~/agent-center/config/.env
 cp ~/.claude/settings.json ~/agent-center/config/settings.json
 
-# 3. Edit configuration (optional)
-# - Edit ~/agent-center/config/.env to set password and other settings
+# 3. Edit configuration (required)
+# - Edit ~/agent-center/config/.env, set PASSWORD=strong_password
 
 # 4. Start
 docker-compose up -d
@@ -293,29 +297,14 @@ uv --version
 
 ### Configure Environment Variables
 
-Copy and configure environment variable files:
+Backend only:
 
 ```bash
-# Backend configuration
 cp backend/.env.example backend/.env
-
-# Edit backend/.env, main configuration items:
-# - MAX_CONCURRENT=5        # Maximum concurrent tasks
-# - PASSWORD=your_password  # Login password (optional, no login required if not set)
-# - SESSION_MAX_AGE=86400   # Session validity period (seconds)
-# - DB_PATH=backend/task_manager.db  # Database path
-# - TASK_TIMEOUT=3600       # Task timeout (seconds)
-# - POST_PROCESS_TIMEOUT=600 # Post-processing timeout (seconds)
-
-# Frontend configuration (local development)
-cp frontend/.env.example frontend/.env
-
-# Edit frontend/.env, main configuration items:
-# - NEXT_PUBLIC_API_DOMAIN=http://localhost:8010     # Backend API address
-# - NEXT_PUBLIC_WS_DOMAIN=ws://localhost:8010        # WebSocket address
+# Edit backend/.env, set PASSWORD=strong_password (required!)
 ```
 
-> **Note**: Frontend environment variables are only used for local development. Production (Docker deployment) uses **runtime configuration**, no need to pass environment variables at build time.
+> **Frontend requires no configuration** — automatically infers backend API and WebSocket from access URL (port `:3010` → `:8010`), works on mobile too.
 
 ### Separate Start (Optional)
 
@@ -343,13 +332,13 @@ Log output example:
 
 ### Docker Runtime Configuration
 
-Frontend supports **runtime environment variable injection**, no need to specify backend address at build time:
+Optional: specify backend address at runtime:
 
 ```bash
-# Build universal image (build once, deploy anywhere)
+# Build universal image
 docker build -t agent-center:latest -f frontend/Dockerfile .
 
-# Specify backend address at runtime
+# Specify backend address (optional, auto-infers if omitted)
 docker run -d --name ac-frontend \
   -p 3010:3010 \
   -e API_DOMAIN=http://backend:8010 \
@@ -357,11 +346,7 @@ docker run -d --name ac-frontend \
   agent-center:latest
 ```
 
-**Configuration:**
-- `API_DOMAIN`: Backend API address (required)
-- `WS_DOMAIN`: WebSocket address (required)
-- Configuration is dynamically injected into pages via `/api/config` endpoint
-- Frontend automatically reads configuration and sends requests to correct backend address
+> **Tip**: Without environment variables, frontend auto-infers backend from browser URL (e.g., `http://192.168.1.100:3010` → backend API `http://192.168.1.100:8010`).
 
 </details>
 
@@ -371,6 +356,25 @@ docker run -d --name ac-frontend \
 
 <details>
 <summary>View FAQ</summary>
+
+### ⚠️ Security Warning
+
+**You MUST set `PASSWORD` after deployment!**
+
+If password is not set, anyone who knows your device IP can:
+- View all tasks and execution logs (may contain API Keys, code, and other sensitive information)
+- Execute arbitrary Claude Code commands in your name
+- Delete tasks and modify configurations
+
+**Correct approach:**
+```bash
+# backend/.env
+PASSWORD=strong_password (at least 12 characters, including uppercase, lowercase, numbers, and symbols)
+```
+
+**Backend listening:**
+
+Backend listens on `0.0.0.0` by default, allowing LAN access. On startup, it automatically adds the local IP to the CORS allowlist, so mobile access works without extra configuration.
 
 ### Network Access Configuration
 
@@ -405,9 +409,9 @@ Access URLs:
 **Q: Phone cannot access?**
 
 1. Confirm phone and computer are on the same WiFi network
-2. Check if firewall has opened ports 8010 (backend) and 3010 (frontend)
-3. Modify `NEXT_PUBLIC_API_DOMAIN` in `frontend/.env` to `http://<local-IP>:8010`
-4. Modify `NEXT_PUBLIC_WS_DOMAIN` in `frontend/.env` to `ws://<local-IP>:8010`
+2. Check firewall allows ports 8010 (backend) and 3010 (frontend)
+3. Backend listens on `0.0.0.0` by default (already supports mobile)
+4. Frontend auto-adapts, no extra configuration needed
 
 ### Firewall Configuration
 

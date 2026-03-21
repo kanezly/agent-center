@@ -2,7 +2,7 @@
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 
 from auth import require_auth, is_auth_enabled
 
@@ -25,16 +25,27 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in PUBLIC_PATHS:
             return await call_next(request)
 
-        # 未配置密码则跳过认证
+        # 未配置密码则拒绝访问（强制启用认证）
         if not is_auth_enabled():
-            return await call_next(request)
+            return JSONResponse(
+                status_code=401,
+                content={"error": "auth_not_configured", "message": "认证未启用，请先设置 PASSWORD 环境变量"},
+                headers={
+                    "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+                    "Access-Control-Allow-Credentials": "true",
+                }
+            )
 
         # 检查是否已认证
         session_id = request.cookies.get("session_id")
         if not require_auth(session_id):
             return JSONResponse(
                 status_code=401,
-                content={"error": "unauthorized", "message": "请先登录"}
+                content={"error": "unauthorized", "message": "请先登录"},
+                headers={
+                    "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+                    "Access-Control-Allow-Credentials": "true",
+                }
             )
 
         return await call_next(request)
