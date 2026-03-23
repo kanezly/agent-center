@@ -7,7 +7,8 @@ import logging
 import os
 
 from db import fetch_one, fetch_all, execute, get_connection
-from services.runner_service import run_claude_task
+from services.agent_runner import execute_agent, run_post_process
+from services.agent import AgentRegistry, AgentConfig
 from services.worktree_service import create_worktree
 from utils.platform import get_process_create_kwargs, terminate_process
 from config import settings
@@ -46,241 +47,6 @@ def get_system_prompt_for_task(
     else:
         # 未知模式，返回默认值
         return EXECUTE_SYSTEM_PROMPT
-
-
-# 后处理流程 prompt：用于隔离任务批准后的 merge 和清理
-POST_PROCESS_PROMPT = "请执行以下合并与清理流程（必须按顺序执行）：1) 检查未提交代码：cd {worktree_path} 且 git status --porcelain，如果有改动则 git add -A 并用 git diff --cached 分析改动内容后生成描述性 commit 信息然后执行 git commit，之后执行步骤 2-7；如果没有改动则跳过提交与合并步骤，直接执行步骤 6-7；2) 切回主目录工作区：cd {main_project_path}。3) 查看主目录当前分支：git branch --show-current，记录分支名。4) 执行 merge 到当前分支：git merge --no-ff -m 合并功能分支 {branch_name} {branch_name}（如有不相关历史错误，添加 --allow-unrelated-histories 参数）。5) 处理 merge 冲突（如有）：git status 查看冲突，git diff 查看内容，手动编辑解决，git add 已解决的文件，git commit。6) 清理工作树：git worktree remove --force {worktree_path}。7) 清理功能分支：git branch -d {branch_name}。注意：必须完整执行所有步骤。重要警告：不要在主目录 {main_project_path} 上执行任何清理操作（如 git clean、git checkout -- . 等） - 主目录可能还有其他未提交的修改需要保留！只能清理 worktree 目录 {worktree_path}。"
-
-
-async def run_post_process(
-    task_id: int,
-    session_id: str,
-    worktree_path: str,
-    branch_name: str,
-    main_project_path: str,
-    broadcast_global: Optional[Callable[[str, dict], Awaitable[None]]] = None,
-) -> tuple[bool, str]:
-    """在隔离任务所在文件夹 resume session，执行合并与清理流程。
-
-    注意：此函数仅执行后处理，不更新任务状态。调用方负责状态更新。
-
-    Args:
-        task_id: 任务 ID
-        session_id: Claude session ID（用于 --resume）
-        worktree_path: worktree 路径
-        branch_name: 功能分支名称
-        main_project_path: 主目录工作区路径
-        broadcast_global: async callable(event_type, data) for global event broadcast
-
-    Returns:
-        Tuple of (success: bool, message: str)
-    """
-    from services.runner_service import get_claude_cmd
-
-    # 验证必需参数
-    if not main_project_path:
-        logger.error(f"Task {task_id}: main_project_path is required but was empty or None")
-        return False, "main_project_path is required but was empty or None"
-
-    # 构建后处理 prompt
-    prompt = POST_PROCESS_PROMPT.format(
-        main_project_path=main_project_path,
-        task_id=task_id,
-        branch_name=branch_name,
-        worktree_path=worktree_path,
-    )
-
-    # 调试日志：打印 prompt 长度和前 500 个字符
-    logger.info(f"Task {task_id}: Post-process prompt length={len(prompt)}, preview={prompt[:500]}...")
-
-    # 使用 build_claude_args 构建参数，确保与正常任务执行一致
-    from services.runner_service import build_claude_args
-
-    # 后处理流程需要访问 worktree 和主项目目录
-    # 注意：build_claude_args 只添加一个 cwd，但我们需要添加两个目录
-    # 所以先构建基础参数，然后手动添加额外的 --add-dir
-    args = build_claude_args(
-        prompt=prompt,
-        cwd=worktree_path,  # 主工作目录是 worktree
-        mode="execute",
-        permission_mode=None,
-        session_id=session_id,
-        system_prompt=None,  # 后处理不需要特殊的 system prompt
-        fork_session_id=None,
-    )
-
-    # 额外添加主项目路径到授权目录（build_claude_args 只添加了 worktree_path）
-    # 在 --dangerously-skip-permissions 之前插入 --add-dir
-    # 找到 --dangerously-skip-permissions 的位置
-    try:
-        skip_perms_index = args.index("--dangerously-skip-permissions")
-        # 在它之前插入 --add-dir main_project_path
-        args.insert(skip_perms_index, "--add-dir")
-        args.insert(skip_perms_index + 1, main_project_path)
-    except ValueError:
-        # 如果没有找到 --dangerously-skip-permissions，追加到末尾
-        args.extend(["--add-dir", main_project_path])
-
-    logger.info(f"Task {task_id}: Running post-process with args: {' '.join(args)}")
-
-    try:
-        # 确保 worktree 路径存在
-        if not os.path.exists(worktree_path):
-            return False, f"Worktree path does not exist: {worktree_path}"
-
-        # 准备环境
-        env = dict(os.environ)
-        env.pop("CLAUDECODE", None)
-        env.pop("CLAUDE_CODE_ENTRYPOINT", None)
-        env["PYTHONIOENCODING"] = "utf-8"
-
-        # 获取超时配置
-        from config import settings
-
-        # 直接创建进程执行
-        result = await _run_post_process(
-            args=args,
-            cwd=worktree_path,
-            env=env,
-            timeout=settings.POST_PROCESS_TIMEOUT,
-            task_id=task_id,
-        )
-
-        returncode, timed_out = result
-
-        if timed_out:
-            return False, f"Post-process timed out after {settings.POST_PROCESS_TIMEOUT}s"
-
-        if returncode != 0:
-            logger.warning(f"Task {task_id}: Post-process returned non-zero: {returncode}")
-
-        # 检查 git worktree list 输出，确认 worktree 是否已被移除
-        # 注意：不检查文件夹是否存在，只检查 git worktree 是否已解绑
-        import subprocess
-        try:
-            result_check = subprocess.run(
-                ["git", "worktree", "list"],
-                capture_output=True,
-                text=True,
-                cwd=main_project_path,
-                timeout=10,
-            )
-            worktree_list = result_check.stdout
-            # 检查 worktree_path 是否还在 git worktree list 输出中
-            # 规范化路径格式进行比较（处理 Windows 和 Unix 路径差异）
-            normalized_worktree_path = os.path.abspath(worktree_path).replace("\\", "/")
-            if normalized_worktree_path in worktree_list.replace("\\", "/"):
-                return False, f"Post-process failed: worktree still registered at {worktree_path}"
-            logger.info(f"Task {task_id}: Worktree successfully removed from git")
-        except Exception as e:
-            logger.warning(f"Task {task_id}: Failed to check worktree status: {e}")
-            # 兜底检查：如果无法检查 git worktree，则检查文件夹是否存在
-            if os.path.exists(worktree_path):
-                return False, f"Post-process failed: worktree folder still exists at {worktree_path}"
-
-        # 后处理成功，现在可以删除 worktree 文件夹了
-        try:
-            import shutil
-            if os.path.exists(worktree_path):
-                shutil.rmtree(worktree_path)
-                logger.info(f"Task {task_id}: Worktree folder deleted: {worktree_path}")
-        except Exception as e:
-            logger.warning(f"Task {task_id}: Failed to delete worktree folder: {e}")
-            # 文件夹删除失败不影响整体成功判断
-
-        logger.info(f"Task {task_id}: Post-process completed")
-        return True, "Success"
-
-    except Exception as e:
-        logger.exception(f"Task {task_id}: Post-process error: {e}")
-        # 广播错误事件
-        if broadcast_global:
-            await broadcast_global("task_updated", {
-                "id": task_id,
-                "status": "reviewing",
-                "reason": "error",
-                "message": str(e)
-            })
-        return False, f"Post-process error: {str(e)}"
-
-
-async def _run_post_process(
-    args: List[str],
-    cwd: str,
-    env: Optional[Dict[str, str]] = None,
-    timeout: Optional[int] = None,
-    task_id: Optional[int] = None,
-) -> tuple[int, bool]:
-    """运行后处理进程并返回结果
-
-    Returns:
-        (returncode, timed_out)
-    """
-    try:
-        # 创建进程
-        proc = await asyncio.create_subprocess_exec(
-            *args,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            cwd=cwd,
-            env=env,
-            **get_process_create_kwargs()
-        )
-
-        logger.info(f"Post-process started with PID {proc.pid}")
-
-        # 注册进程到全局注册表（如果提供了 task_id）
-        if task_id:
-            from utils.process_registry import ProcessRegistry
-            registry = ProcessRegistry()
-            registry.register(task_id, proc)
-
-        try:
-            # 使用逐行读取替代 read()，避免死锁
-            async def read_stdout():
-                while True:
-                    line = await proc.stdout.readline()
-                    if not line:
-                        break
-
-            async def read_stderr():
-                while True:
-                    line = await proc.stderr.readline()
-                    if not line:
-                        break
-
-            # 并发读取输出
-            stdout_task = asyncio.create_task(read_stdout())
-            stderr_task = asyncio.create_task(read_stderr())
-
-            # 等待进程完成（带超时）
-            timed_out = False
-            try:
-                if timeout:
-                    await asyncio.wait_for(proc.wait(), timeout=timeout)
-                else:
-                    await proc.wait()
-            except asyncio.TimeoutError:
-                timed_out = True
-                await terminate_process(proc)
-
-            # 等待读取完成
-            await asyncio.gather(stdout_task, stderr_task, return_exceptions=True)
-
-            logger.info(f"Post-process returncode: {proc.returncode}")
-
-            return (proc.returncode if not timed_out else -1, timed_out)
-        finally:
-            # 进程结束后注销
-            if task_id:
-                registry.unregister(task_id)
-
-    except FileNotFoundError as e:
-        logger.error(f"Command not found: {args[0]}")
-        return (127, "", f"Command not found: {args[0]}", False)
-    except Exception as e:
-        logger.exception(f"Process error: {e}")
-        return (1, "", str(e), False)
 
 
 class RalphLoop:
@@ -486,18 +252,23 @@ class RalphLoop:
             # 1. 任务有自己的 session_id（继续执行、重试）
             # 使用 fork-session 的场景：
             # 1. 任务是首次执行且是通过 fork 创建的（没有自己的 session_id，但有 fork_from_task_id）
-            status = await run_claude_task(
-                task_id,
-                prompt,
+
+            # 构建 Agent 配置
+            agent_config = AgentConfig(
+                mode=mode,
+                session_id=session_id,
+                fork_session_id=fork_session_id,
+                system_prompt=get_system_prompt_for_task(mode=mode),
+            )
+
+            # 通过统一接口执行 Agent 任务
+            status = await execute_agent(
+                task_id=task_id,
+                prompt=prompt,
                 cwd=cwd,
                 broadcast=self.broadcast,
                 broadcast_global=self.broadcast_global,
-                mode=mode,
-                session_id=session_id,  # 直接传入，由 build_claude_args 处理优先级
-                system_prompt=get_system_prompt_for_task(
-                    mode=mode
-                ),
-                fork_session_id=fork_session_id,  # 传入 fork session ID
+                config=agent_config,
             )
 
             # 只有隔离任务才需要检查 worktree 清理
@@ -541,7 +312,11 @@ class RalphLoop:
                     await execute("UPDATE tasks SET status='post_processing' WHERE id=?", (task_id,))
 
                     logger.info(f"Task {task_id}: Running post-process for auto-approved isolated task")
+                    # 获取 Agent 实例用于后处理
+                    agent = AgentRegistry.get(settings.AGENT_BACKEND)
+
                     success, msg = await run_post_process(
+                        agent=agent,
                         task_id=task_id,
                         session_id=current_session_id,
                         worktree_path=worktree_info["path"],

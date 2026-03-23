@@ -87,6 +87,12 @@ class Settings(BaseSettings):
     # Session 配置
     SESSION_MAX_AGE: int = Field(default=86400, ge=3600, le=604800, description="Session 有效期（秒）")
 
+    # Agent 后端配置
+    AGENT_BACKEND: str = Field(
+        default="claude",
+        description="默认 Agent 后端名称（如 claude、pi-agent、openmanus 等）"
+    )
+
 
 # 全局配置实例
 settings = Settings()
@@ -98,6 +104,7 @@ CORS_ORIGINS = settings.CORS_ORIGINS
 MAX_CONCURRENT = settings.MAX_CONCURRENT
 TASK_TIMEOUT = settings.TASK_TIMEOUT
 POST_PROCESS_TIMEOUT = settings.POST_PROCESS_TIMEOUT
+AGENT_BACKEND = settings.AGENT_BACKEND
 
 
 def check_claude_cli() -> bool:
